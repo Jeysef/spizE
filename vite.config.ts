@@ -1,3 +1,4 @@
+import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import devtools from "solid-devtools/vite";
 import { defineConfig } from "vite";
@@ -10,5 +11,10 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
+  },
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./src"),
+    },
   },
 });
