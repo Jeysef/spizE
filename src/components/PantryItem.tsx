@@ -1,23 +1,81 @@
+import { createWritableMemo } from "@solid-primitives/memo";
 import { A } from "@solidjs/router";
-import PenIcon from "lucide-solid/icons/pen";
-import type { Component } from "solid-js";
+import CheckIcon from "lucide-solid/icons/check";
+import ChevronRight from "lucide-solid/icons/chevron-right";
+import PenIcon from "lucide-solid/icons/pencil";
+import XIcon from "lucide-solid/icons/x";
+import { type Component, createSignal, Show } from "solid-js";
+import { buttonVariants } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { cn } from "~/lib/utils";
 
 interface PantryItemProps {
   id: string;
   name: string;
-  quantity: string;
+  quantity: number;
+  fullQuantity: number;
 }
 
 export const PantryItem: Component<PantryItemProps> = (props) => {
+  const [isQuantityEditing, setQuantityEditing] = createSignal(false);
+  const [quantity, setQuantity] = createWritableMemo(() => props.quantity);
   return (
     <div class="flex justify-between w-full ">
       <div class="flex items-center gap-2">
-        <span>{props.name}</span>
-        <A href={`/items/${props.id}`}>
-          <PenIcon class="size-4" />
+        <A
+          href={`/items/${props.id}`}
+          class={cn(
+            buttonVariants({ variant: "link" }),
+            "text-foreground text-base"
+          )}
+        >
+          <span>{props.name}</span>
+          <ChevronRight class="size-4" />
         </A>
       </div>
-      <span>{props.quantity}</span>
+      <div class="flex items-center gap-2">
+        <Show
+          when={isQuantityEditing()}
+          fallback={
+            <>
+              <div>
+                <PenIcon
+                  class="size-4"
+                  on:click={() => setQuantityEditing(true)}
+                />
+              </div>
+              <span>{quantity()}</span>/<span>{props.fullQuantity}</span>
+            </>
+          }
+        >
+          <div class="hover:bg-accent p-0.5 rounded-md">
+            <CheckIcon
+              class="size-5"
+              on:click={() => setQuantityEditing(false)}
+            />
+          </div>
+          <div class="hover:bg-accent p-0.5 rounded-md">
+            <XIcon
+              class="size-5"
+              on:click={() => {
+                setQuantity(props.quantity);
+                setQuantityEditing(false);
+              }}
+            />
+          </div>
+          <Input
+            type="number"
+            required
+            pattern="[0-9]*"
+            min={0}
+            value={quantity()}
+            size={quantity().toString().split("").length + 1}
+            onInput={(e) => setQuantity(Number(e.currentTarget.value))}
+            class="invalid:border-red-500 invalid:text-red-600"
+          />
+          /<span>{props.fullQuantity}</span>
+        </Show>
+      </div>
     </div>
   );
 };
