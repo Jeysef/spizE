@@ -1,5 +1,3 @@
-"use client";
-
 import { A } from "@solidjs/router";
 import type { LucideIcon } from "lucide-solid";
 import type { ComponentProps } from "solid-js";
