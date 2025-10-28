@@ -23,7 +23,7 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
     <div class="flex justify-between w-full ">
       <div class="flex items-center gap-2">
         <A
-          href={`/items/${props.id}`}
+          href={`/item/${props.id}`}
           class={cn(
             buttonVariants({ variant: "link" }),
             "text-foreground text-base"

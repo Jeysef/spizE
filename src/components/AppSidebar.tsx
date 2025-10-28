@@ -57,7 +57,7 @@ export function AppSidebar() {
               class="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               {/* <IconInnerShadowTop className="!size-5" /> */}
-              <span class="text-base font-semibold">SpížE</span>
+              <span class="text-base font-semibold">Spíž-E</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
