@@ -8,7 +8,7 @@ export const routeNames = {
   "/": "Dashboard",
   "/about": "About",
   "/items": "Items",
-  "/items/:id": "Add Item",
+  "/item/:id": "Add Item",
   "/items/add": "Add Item",
   "/shopping": "Shopping",
 } as const;
@@ -34,7 +34,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
     component: lazy(() => import("./pages/ItemAdd")),
   },
   {
-    path: "/items/:id",
+    path: "/item/:id",
     component: lazy(() => import("./pages/item/detail/ItemDetail.vm")),
     preload: ({ params }) => ItemData(params.id),
   },
