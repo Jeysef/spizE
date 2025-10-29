@@ -1,6 +1,7 @@
 import { createForm } from "@tanstack/solid-form";
 import { Show } from "solid-js";
 import { z } from "zod";
+import type { ItemResponse } from "~/client";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -13,11 +14,10 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
-import type { Item } from "~/pages/item/types";
 
 interface ItemDetailPageProps {
-  item: Item;
-  onSubmit?: (values: Item) => void;
+  item: ItemResponse;
+  onSubmit?: (values: ItemResponse) => void;
   onError?: (error: Error) => void;
   handleDelete: () => void;
 }
@@ -31,9 +31,11 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
     defaultValues: {
       id: item.id,
       name: item.name,
-      quantity: item.quantity,
-      fullQuantity: item.fullQuantity,
-    },
+      current_quantity: item.current_quantity,
+      full_quantity: item.full_quantity,
+      category_id: item.category_id,
+      note: item.note,
+    } satisfies ItemResponse,
     // Define the onSubmit handler for when the form is successfully submitted
     onSubmit: async ({ value }) => {
       props.onSubmit?.(value);
@@ -103,7 +105,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Current Quantity Field */}
               <form.Field
-                name="quantity"
+                name="current_quantity"
                 validators={{
                   // onChange: z.coerce
                   //   .number({ invalid_type_error: "Must be a number." })
@@ -136,7 +138,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
 
               {/* Target Quantity Field */}
               <form.Field
-                name="fullQuantity"
+                name="full_quantity"
                 validators={{
                   onChange: ({ value }) =>
                     value > 0
@@ -172,13 +174,13 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
               <Label>Stock Level</Label>
               <Progress
                 value={
-                  (form.state.values.quantity /
-                    form.state.values.fullQuantity) *
+                  (form.state.values.current_quantity /
+                    form.state.values.full_quantity) *
                   100
                 }
               />
               <p class="text-center text-sm text-muted-foreground">
-                {`${form.state.values.quantity} / ${form.state.values.fullQuantity}`}
+                {`${form.state.values.current_quantity} / ${form.state.values.full_quantity}`}
               </p>
             </div>
           </CardContent>

@@ -35,7 +35,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/item/:id",
-    component: lazy(() => import("./pages/item/detail/ItemDetail.vm")),
+    component: lazy(() => import("./pages/item/detail")),
     preload: ({ params }) => ItemData(params.id),
   },
   {

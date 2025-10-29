@@ -1,48 +1,38 @@
 import { useParams } from "@solidjs/router";
-import LoaderIcon from "lucide-solid/icons/loader";
-import { Show, Suspense } from "solid-js";
-import { Empty, EmptyHeader } from "~/components/ui/empty";
+import { createComputed, Show } from "solid-js";
 import ItemDetailPage from "~/pages/item/detail/ItemDetail";
-import type { Item } from "~/pages/item/types";
-import ItemData from "~/pages/item.data";
+import { getUserItemUserUserIdItemItemIdGetOptions } from "~/client/@tanstack/solid-query.gen";
+import { useUser } from "~/providers/user/user.hooks";
+import { useQuery } from "@tanstack/solid-query";
+import z from "zod";
 
-function ItemDetailPageDataProvider() {
+export function ItemDetailPageVM() {
   const params = useParams();
-  const item = ItemData(params.id);
-  return (
-    <Suspense
-      fallback={
-        <Empty>
-          <EmptyHeader>
-            Loading...
-            <LoaderIcon class="animate-spin" />
-          </EmptyHeader>
-        </Empty>
-      }
-    >
-      <Show when={item()}>
-        <ItemDetailPageVM item={item()!} />
-      </Show>
-    </Suspense>
+  // use zod to validate the id
+  const itemId = z.coerce.number().positive().min(1).parse(params.id);
+  const [user] = useUser();
+  const item = useQuery(() =>
+    getUserItemUserUserIdItemItemIdGetOptions({
+      path: { user_id: user().id, item_id: itemId },
+    })
   );
-}
 
-interface ItemDetailPageProps {
-  item: Item;
-}
-
-// ItemDetail component
-function ItemDetailPageVM(props: ItemDetailPageProps) {
-  // Handler for deleting the item (outside of form submission logic)
+  createComputed(() => {
+    if (item.error) {
+      throw new Error("Could not load item");
+    }
+  });
 
   return (
-    <ItemDetailPage
-      item={props.item}
-      handleDelete={() => {}}
-      onError={() => {}}
-      onSubmit={() => {}}
-    />
+    <Show when={item.data} keyed>
+      {(data) => (
+        <ItemDetailPage
+          item={data}
+          handleDelete={() => {}}
+          onError={() => {}}
+          onSubmit={() => {}}
+        />
+      )}
+    </Show>
   );
 }
-
-export default ItemDetailPageDataProvider;
