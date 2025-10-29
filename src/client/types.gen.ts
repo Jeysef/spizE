@@ -73,6 +73,12 @@ export type ItemCreate = {
      */
     full_quantity: number;
     /**
+     * Current Quantity
+     *
+     * Current quantity
+     */
+    current_quantity: number;
+    /**
      * Category Id
      *
      * Category ID

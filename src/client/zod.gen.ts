@@ -29,7 +29,8 @@ export const zHealthResponse = z.object({
  */
 export const zItemCreate = z.object({
     name: z.string(),
-    full_quantity: z.int(),
+    full_quantity: z.int().gte(1),
+    current_quantity: z.int().gte(0),
     category_id: z.int(),
     note: z.string()
 });
@@ -41,8 +42,8 @@ export const zItemResponse = z.object({
     id: z.int(),
     category_id: z.int(),
     name: z.string(),
-    full_quantity: z.int(),
-    current_quantity: z.int(),
+    full_quantity: z.int().gte(1),
+    current_quantity: z.int().gte(0),
     note: z.string()
 });
 

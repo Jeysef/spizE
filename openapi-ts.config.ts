@@ -1,6 +1,6 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 import { loadEnv } from "vite";
-import { validateEnv } from "~/env.schema";
+import { validateEnv } from "./src/env.schema";
 
 export default defineConfig(() => {
   const env = validateEnv(loadEnv("production", process.cwd()));
