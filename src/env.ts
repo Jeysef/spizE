@@ -1,6 +1,7 @@
 import { createEnv } from "@t3-oss/env-core";
 import { vite } from "@t3-oss/env-core/presets-zod";
 import { z } from "zod";
+import { envOptionsSchema } from "~/env.schema";
 
 export const env = createEnv({
   server: {},
@@ -12,7 +13,11 @@ export const env = createEnv({
   clientPrefix: "VITE_",
 
   client: {
-    VITE_AUTH_TOKEN: z.string().min(1),
+    VITE_AUTH_TOKEN: envOptionsSchema.VITE_AUTH_TOKEN,
+    VITE_API_BASE_URL: envOptionsSchema.VITE_API_BASE_URL,
+  },
+  shared: {
+    DEV: z.boolean().optional(),
   },
 
   /**
