@@ -1,7 +1,10 @@
+import { A } from "@solidjs/router";
 import { createForm } from "@tanstack/solid-form";
+import ChevronLeft from "lucide-solid/icons/chevron-left";
 import { Show } from "solid-js";
 import { z } from "zod";
-import type { ItemResponse } from "~/client";
+import type { ItemCreate, ItemResponse } from "~/client";
+import { zItemCreate } from "~/client/zod.gen";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -17,43 +20,38 @@ import { Progress } from "~/components/ui/progress";
 
 interface ItemDetailPageProps {
   item: ItemResponse;
-  onSubmit?: (values: ItemResponse) => void;
+  onSubmit?: (values: ItemCreate) => void;
   onError?: (error: Error) => void;
   handleDelete: () => void;
 }
 
 // ItemDetail component with integrated TanStack Form
 export default function ItemDetailPage(props: ItemDetailPageProps) {
-  const item = props.item;
-
   const form = createForm(() => ({
-    // Set default values from our mock item data
     defaultValues: {
-      id: item.id,
-      name: item.name,
-      current_quantity: item.current_quantity,
-      full_quantity: item.full_quantity,
-      category_id: item.category_id,
-      note: item.note,
-    } satisfies ItemResponse,
-    // Define the onSubmit handler for when the form is successfully submitted
+      name: props.item.name,
+      current_quantity: props.item.current_quantity,
+      full_quantity: props.item.full_quantity,
+      category_id: props.item.category_id,
+      note: props.item.note,
+    } satisfies ItemCreate,
     onSubmit: async ({ value }) => {
       props.onSubmit?.(value);
     },
 
-    // Use the Zod adapter for validation
-    // validatorAdapter: zodValidator,
+    validators: {
+      onSubmit: zItemCreate,
+    },
   }));
 
   return (
     <main class="container mx-auto max-w-2xl px-4 py-8">
-      {/* A link to navigate back to the dashboard */}
-      <a
+      <A
         href="/"
-        class="mb-4 inline-block text-sm text-muted-foreground transition-colors hover:text-foreground"
+        class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center"
       >
-        &larr; Back to Dashboard
-      </a>
+        <ChevronLeft class="size-5" /> Back to Dashboard
+      </A>
 
       <form
         onSubmit={(e) => {
@@ -107,11 +105,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
               <form.Field
                 name="current_quantity"
                 validators={{
-                  // onChange: z.coerce
-                  //   .number({ invalid_type_error: "Must be a number." })
-                  //   .nonnegative("Quantity cannot be negative."),
-                  onChange: ({ value }) =>
-                    value > 0 ? "Quantity cannot be negative." : undefined,
+                  onChange: z.number().min(0, "Quantity cannot be negative."),
                 }}
               >
                 {(field) => (
@@ -124,12 +118,16 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                       value={field().state.value}
                       onBlur={field().handleBlur}
                       onInput={(e) =>
-                        field().handleChange(Number(e.currentTarget.value))
+                        field().handleChange(
+                          parseInt(e.currentTarget.value.trim())
+                        )
                       }
                     />
                     <Show when={field().state.meta.errors}>
                       <p class="text-sm text-destructive">
-                        {field().state.meta.errors[0]}
+                        {field()
+                          .state.meta.errors.map((error) => error?.message)
+                          .join(", ")}
                       </p>
                     </Show>
                   </div>
@@ -140,10 +138,9 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
               <form.Field
                 name="full_quantity"
                 validators={{
-                  onChange: ({ value }) =>
-                    value > 0
-                      ? "Target quantity must be greater than 0."
-                      : undefined,
+                  onChange: z
+                    .number()
+                    .min(1, "Target quantity must be greater than 0."),
                 }}
               >
                 {(field) => (
@@ -156,12 +153,16 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                       value={field().state.value}
                       onBlur={field().handleBlur}
                       onInput={(e) =>
-                        field().handleChange(Number(e.currentTarget.value))
+                        field().handleChange(
+                          Number(e.currentTarget.value.trim())
+                        )
                       }
                     />
                     <Show when={field().state.meta.errors}>
                       <p class="text-sm text-destructive">
-                        {field().state.meta.errors[0]}
+                        {field()
+                          .state.meta.errors.map((error) => error?.message)
+                          .join(", ")}
                       </p>
                     </Show>
                   </div>
@@ -174,13 +175,11 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
               <Label>Stock Level</Label>
               <Progress
                 value={
-                  (form.state.values.current_quantity /
-                    form.state.values.full_quantity) *
-                  100
+                  (props.item.current_quantity / props.item.full_quantity) * 100
                 }
               />
               <p class="text-center text-sm text-muted-foreground">
-                {`${form.state.values.current_quantity} / ${form.state.values.full_quantity}`}
+                {`${props.item.current_quantity} / ${props.item.full_quantity}`}
               </p>
             </div>
           </CardContent>
@@ -200,9 +199,9 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
             >
               {(state) => {
                 return (
-                  <button type="submit" disabled={!state().canSubmit}>
+                  <Button type="submit" disabled={!state().canSubmit}>
                     {state().isSubmitting ? "..." : "Submit"}
-                  </button>
+                  </Button>
                 );
               }}
             </form.Subscribe>
