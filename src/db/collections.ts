@@ -3,7 +3,8 @@ import { createCollection } from "@tanstack/solid-db";
 import { QueryClient } from "@tanstack/solid-query";
 import type { Accessor } from "solid-js";
 import {
-  createItemUserUserIdItemNewPut,
+  type CategoryResponse,
+  getCategoriesCategoryAllGet,
   getUserItemsUserUserIdItemAllGet,
   getUsersUserAllGet,
   type ItemResponse,
@@ -11,6 +12,7 @@ import {
   updateItemUserUserIdItemItemIdPatch,
 } from "~/client";
 import {
+  getCategoriesCategoryAllGetQueryKey,
   getUserItemsUserUserIdItemAllGetQueryKey,
   getUsersUserAllGetQueryKey,
 } from "~/client/@tanstack/solid-query.gen";
@@ -94,3 +96,21 @@ export const createItemsCollectionOptions = (
     })
   );
 };
+
+export const categoriesCollection = createCollection(
+  queryCollectionOptions({
+    queryKey: getCategoriesCategoryAllGetQueryKey(),
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getCategoriesCategoryAllGet({
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryClient,
+    getKey: (item: CategoryResponse) => item.id,
+    refetchInterval: 10000, // 10 second
+    // schema: zGetCategoriesCategoryAllGetResponse,
+  })
+);

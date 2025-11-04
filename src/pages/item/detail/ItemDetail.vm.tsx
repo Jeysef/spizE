@@ -5,7 +5,10 @@ import { useUser } from "~/providers/user/user.hooks";
 import z from "zod";
 import type { ItemCreate } from "~/client";
 import { eq, useLiveQuery } from "@tanstack/solid-db";
-import { createItemsCollectionOptions } from "~/db/collections";
+import {
+  categoriesCollection,
+  createItemsCollectionOptions,
+} from "~/db/collections";
 import { merge } from "~/lib/utils";
 
 export function ItemDetailPageVM() {
@@ -19,6 +22,10 @@ export function ItemDetailPageVM() {
       .from({ items: collection })
       .where(({ items }) => eq(items.id, itemId))
       .findOne()
+  );
+
+  const categoriesQuery = useLiveQuery((q) =>
+    q.from({ categories: categoriesCollection })
   );
 
   // createComputed(() => {
@@ -40,6 +47,7 @@ export function ItemDetailPageVM() {
           handleDelete={() => {}}
           onError={() => {}}
           onSubmit={handleSubmit}
+          categories={categoriesQuery.data}
         />
       )}
     </Show>

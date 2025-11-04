@@ -3,7 +3,7 @@ import { createForm } from "@tanstack/solid-form";
 import ChevronLeft from "lucide-solid/icons/chevron-left";
 import { Show } from "solid-js";
 import { z } from "zod";
-import type { ItemCreate, ItemResponse } from "~/client";
+import type { CategoryResponse, ItemCreate, ItemResponse } from "~/client";
 import { zItemCreate } from "~/client/zod.gen";
 import { Button } from "~/components/ui/button";
 import {
@@ -17,12 +17,20 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 interface ItemDetailPageProps {
   item: ItemResponse;
   onSubmit?: (values: ItemCreate) => Promise<void>;
   onError?: (error: Error) => void;
   handleDelete: () => void;
+  categories: CategoryResponse[];
 }
 
 // ItemDetail component with integrated TanStack Form
@@ -169,6 +177,65 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                 )}
               </form.Field>
             </div>
+
+            {/* Category Field */}
+            <form.Field
+              name="category_id"
+              validators={{
+                onChange: z
+                  .number()
+                  .min(1, "Category ID must be at least 1.")
+                  .max(
+                    props.categories.length,
+                    "Category ID must be less than the number of categories."
+                  ),
+              }}
+            >
+              {(field) => (
+                <div class="grid gap-2">
+                  <Label for={field().name}>Category</Label>
+                  <Select
+                    value={{
+                      value: field().state.value,
+                      label: props.categories.find(
+                        (category) => category.id === field().state.value
+                      )?.name,
+                    }}
+                    placeholder="Select a category"
+                    onBlur={field().handleBlur}
+                    onChange={(value) =>
+                      value && field().handleChange(value.value)
+                    }
+                    options={props.categories.map((category) => ({
+                      value: category.id,
+                      label: category.name,
+                    }))}
+                    optionValue="value"
+                    optionTextValue="label"
+                    itemComponent={(props) => (
+                      <SelectItem item={props.item}>
+                        {props.item.rawValue.label}
+                      </SelectItem>
+                    )}
+                  >
+                    <SelectTrigger aria-label="Fruit" class="w-[180px]">
+                      <SelectValue<{
+                        value: number;
+                        label: string;
+                      }>>
+                        {(state) => state.selectedOption().label}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent />
+                  </Select>
+                  <Show when={field().state.meta.errors.length > 0}>
+                    <p class="text-sm text-destructive">
+                      {field().state.meta.errors.join(", ")}
+                    </p>
+                  </Show>
+                </div>
+              )}
+            </form.Field>
 
             {/* Stock Level Indicator */}
             <div class="grid gap-2">
