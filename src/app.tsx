@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { type JSX, type ParentComponent, Suspense } from "solid-js";
 import { AppSidebar } from "~/components/AppSidebar";
 import { BottomNavigation } from "~/components/BottomNavigation";
-import { SiteHeader } from "~/components/SiteHeader";
+import { SiteHeader } from "~/components/header/SiteHeader";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { UserProvider } from "~/providers/user/user.provider";
 
