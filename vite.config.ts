@@ -21,10 +21,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      target: "esnext",
-      rolupOptions: {
-        external: ["lucide-solid"]
-      }
+      target: "esnext"
     },
     resolve: {
       alias: {
