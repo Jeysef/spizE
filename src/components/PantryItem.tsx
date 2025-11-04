@@ -10,7 +10,7 @@ import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 
 interface PantryItemProps {
-  id: string;
+  id: number;
   name: string;
   quantity: number;
   fullQuantity: number;

@@ -3,7 +3,7 @@ import { createForm } from "@tanstack/solid-form";
 import ChevronLeft from "lucide-solid/icons/chevron-left";
 import { Show } from "solid-js";
 import { z } from "zod";
-import type { ItemCreate, ItemResponse } from "~/client";
+import type { ItemCreate } from "~/client";
 import { zItemCreate } from "~/client/zod.gen";
 import { Button } from "~/components/ui/button";
 import {
@@ -16,29 +16,25 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Progress } from "~/components/ui/progress";
+import { TextField, TextFieldInput } from "~/components/ui/text-field";
 
-interface ItemDetailPageProps {
-  item: ItemResponse;
+interface ItemNewPageProps {
   onSubmit?: (values: ItemCreate) => Promise<void>;
   onError?: (error: Error) => void;
-  handleDelete: () => void;
 }
 
-// ItemDetail component with integrated TanStack Form
-export default function ItemDetailPage(props: ItemDetailPageProps) {
+export default function ItemNewPage(props: ItemNewPageProps) {
   const form = createForm(() => ({
     defaultValues: {
-      name: props.item.name,
-      current_quantity: props.item.current_quantity,
-      full_quantity: props.item.full_quantity,
-      category_id: props.item.category_id,
-      note: props.item.note,
-    } satisfies ItemCreate,
+      name: "",
+      current_quantity: 0,
+      full_quantity: 1,
+      category_id: -1,
+      note: "",
+    },
     onSubmit: async ({ value }) => {
       await props.onSubmit?.(value);
     },
-
     validators: {
       onSubmit: zItemCreate,
     },
@@ -48,7 +44,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
     <main class="container mx-auto max-w-2xl px-4 py-8">
       <A
         href="/"
-        class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center"
+        class="mb-4 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronLeft class="size-5" /> Back to Dashboard
       </A>
@@ -63,10 +59,10 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
         <Card>
           <CardHeader>
             <CardTitle class="text-3xl font-bold tracking-tight">
-              {props.item.name}
+              Add New Pantry Item
             </CardTitle>
             <CardDescription>
-              View and edit the details of this pantry item.
+              Fill in the details to add a new item to your pantry.
             </CardDescription>
           </CardHeader>
           <CardContent class="grid gap-6">
@@ -88,12 +84,12 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                     value={field().state.value}
                     onBlur={field().handleBlur}
                     onInput={(e) => field().handleChange(e.currentTarget.value)}
-                    placeholder="e.g., Whole Wheat Bread"
+                    placeholder="e.g., All-Purpose Flour"
                   />
-                  <Show when={!field().state.meta.isValid}>
-                    {/* <p class="text-sm text-destructive"> */}
-                    <em role="alert">{field().state.meta.errors.join(", ")}</em>
-                    {/* </p> */}
+                  <Show when={field().state.meta.errors.length > 0}>
+                    <p class="text-sm text-destructive">
+                      {field().state.meta.errors.join(", ")}
+                    </p>
                   </Show>
                 </div>
               )}
@@ -119,15 +115,13 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                       onBlur={field().handleBlur}
                       onInput={(e) =>
                         field().handleChange(
-                          parseInt(e.currentTarget.value.trim())
+                          parseInt(e.currentTarget.value.trim(), 10) || 0
                         )
                       }
                     />
-                    <Show when={field().state.meta.errors}>
+                    <Show when={field().state.meta.errors.length > 0}>
                       <p class="text-sm text-destructive">
-                        {field()
-                          .state.meta.errors.map((error) => error?.message)
-                          .join(", ")}
+                        {field().state.meta.errors.join(", ")}
                       </p>
                     </Show>
                   </div>
@@ -140,7 +134,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                 validators={{
                   onChange: z
                     .number()
-                    .min(1, "Target quantity must be greater than 0."),
+                    .min(1, "Target quantity must be at least 1."),
                 }}
               >
                 {(field) => (
@@ -154,56 +148,52 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                       onBlur={field().handleBlur}
                       onInput={(e) =>
                         field().handleChange(
-                          Number(e.currentTarget.value.trim())
+                          parseInt(e.currentTarget.value.trim(), 10) || 1
                         )
                       }
                     />
-                    <Show when={field().state.meta.errors}>
+                    <Show when={field().state.meta.errors.length > 0}>
                       <p class="text-sm text-destructive">
-                        {field()
-                          .state.meta.errors.map((error) => error?.message)
-                          .join(", ")}
+                        {field().state.meta.errors.join(", ")}
                       </p>
                     </Show>
                   </div>
                 )}
               </form.Field>
             </div>
-
-            {/* Stock Level Indicator */}
-            <div class="grid gap-2">
-              <Label>Stock Level</Label>
-              <Progress
-                value={
-                  (props.item.current_quantity / props.item.full_quantity) * 100
-                }
-              />
-              <p class="text-center text-sm text-muted-foreground">
-                {`${props.item.current_quantity} / ${props.item.full_quantity}`}
-              </p>
-            </div>
+            {/* Field for Note */}
+            <form.Field name="note">
+              {(field) => (
+                <div class="grid gap-2">
+                  <Label for={field().name}>Note (Optional)</Label>
+                  <TextField>
+                    <TextFieldInput
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ""}
+                      onBlur={field().handleBlur}
+                      onInput={(e) =>
+                        field().handleChange(e.currentTarget.value)
+                      }
+                      placeholder="e.g., Brand, expiration date, etc."
+                    />
+                  </TextField>
+                </div>
+              )}
+            </form.Field>
           </CardContent>
           <CardFooter class="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={props.handleDelete}
-            >
-              Delete
-            </Button>
             <form.Subscribe
               selector={(state) => ({
                 canSubmit: state.canSubmit,
                 isSubmitting: state.isSubmitting,
               })}
             >
-              {(state) => {
-                return (
-                  <Button type="submit" disabled={!state().canSubmit}>
-                    {state().isSubmitting ? "..." : "Submit"}
-                  </Button>
-                );
-              }}
+              {(state) => (
+                <Button type="submit" disabled={!state().canSubmit}>
+                  {state().isSubmitting ? "Adding..." : "Add Item"}
+                </Button>
+              )}
             </form.Subscribe>
           </CardFooter>
         </Card>

@@ -28,6 +28,8 @@
     "@solidjs/router": "^0.15.1",
     "@t3-oss/env-core": "^0.13.8",
     "@tailwindcss/vite": "^4.1.14",
+    "@tanstack/query-db-collection": "^0.2.37",
+    "@tanstack/solid-db": "^0.1.36",
     "@tanstack/solid-form": "^1.23.7",
     "@tanstack/solid-query": "^5.90.6",
     "@tanstack/zod-form-adapter": "^0.42.1",

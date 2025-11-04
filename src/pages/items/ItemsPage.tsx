@@ -1,5 +1,7 @@
 import { A } from "@solidjs/router";
-import { createMemo, createSignal, For } from "solid-js";
+import { useLiveQuery } from "@tanstack/solid-db";
+import { createMemo, createSignal, For, Show } from "solid-js";
+import type { ItemResponse } from "~/client";
 import {
   Card,
   CardContent,
@@ -17,34 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-
-// Export the Item interface to be used across the application
-export interface Item {
-  id: string;
-  name: string;
-  quantity: number;
-  fullQuantity: number;
-}
-
-// Mock data representing the pantry items.
-// In a real application, this would be fetched from an API.
-const mockItems: Item[] = [
-  { id: "1", name: "Bread", quantity: 1, fullQuantity: 2 },
-  { id: "2", name: "Milk", quantity: 8, fullQuantity: 10 },
-  { id: "3", name: "Eggs", quantity: 5, fullQuantity: 12 },
-  { id: "4", name: "Cheese", quantity: 1, fullQuantity: 4 },
-  { id: "5", name: "Yogurt", quantity: 1, fullQuantity: 6 },
-  { id: "6", name: "Banana", quantity: 8, fullQuantity: 10 },
-  { id: "7", name: "Apples", quantity: 0, fullQuantity: 8 },
-  { id: "8", name: "Chicken Breast", quantity: 0, fullQuantity: 3 },
-  { id: "9", name: "Spinach", quantity: 2, fullQuantity: 2 },
-];
+import { createItemsCollectionOptions } from "~/db/collections";
+import { useUser } from "~/providers/user/user.hooks";
 
 // Reusable component for displaying a single item in the list
-function ItemCard(props: { item: Item }) {
+function ItemCard(props: { item: ItemResponse }) {
   const progress = () => {
-    if (props.item.fullQuantity === 0) return 100; // Fully stocked if target is 0
-    return (props.item.quantity / props.item.fullQuantity) * 100;
+    if (props.item.full_quantity === 0) return 100; // Fully stocked if target is 0
+    return (props.item.current_quantity / props.item.full_quantity) * 100;
   };
 
   return (
@@ -56,7 +38,7 @@ function ItemCard(props: { item: Item }) {
         <div class="grid gap-2 text-center">
           <Label>Stock Level</Label>
           <Progress value={progress()} />
-          <p class="text-sm font-medium text-muted-foreground">{`${props.item.quantity} / ${props.item.fullQuantity}`}</p>
+          <p class="text-sm font-medium text-muted-foreground">{`${props.item.current_quantity} / ${props.item.full_quantity}`}</p>
         </div>
       </CardContent>
       <CardFooter>
@@ -73,41 +55,48 @@ function ItemCard(props: { item: Item }) {
 
 // The main component for the Items page
 export default function ItemsPage() {
-  const [items] = createSignal<Item[]>(mockItems);
-  const [filter, setFilter] = createSignal("");
+  const [nameFilter, setNameFilter] = createSignal("");
   const [sortBy, setSortBy] = createSignal("missing");
 
-  // A memoized signal that filters and sorts the items based on user input
+  const [user] = useUser();
+
+  const itemsQuery = useLiveQuery((q) =>
+    q.from({ users: createItemsCollectionOptions(() => user().id) })
+  );
+
   const filteredAndSortedItems = createMemo(() => {
-    const processedItems = items().filter((item) =>
-      item.name.toLowerCase().includes(filter().toLowerCase())
+    const items = itemsQuery.data;
+    const filteredItems = items?.filter((item) =>
+      item.name.toLowerCase().includes(nameFilter().toLowerCase())
     );
 
     switch (sortBy()) {
       case "name":
-        processedItems.sort((a, b) => a.name.localeCompare(b.name));
+        filteredItems.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case "stock":
-        processedItems.sort(
-          (a, b) => a.quantity / a.fullQuantity - b.quantity / b.fullQuantity
+        filteredItems.sort(
+          (a, b) =>
+            a.current_quantity / a.full_quantity -
+            b.current_quantity / b.full_quantity
         );
         break;
       case "missing":
       default:
-        processedItems.sort((a, b) => {
+        filteredItems.sort((a, b) => {
           // Primary sort: items with 0 quantity first
-          if (a.quantity === 0 && b.quantity > 0) return -1;
-          if (b.quantity === 0 && a.quantity > 0) return 1;
+          if (a.current_quantity === 0 && b.current_quantity > 0) return -1;
+          if (b.current_quantity === 0 && a.current_quantity > 0) return 1;
 
-          // Secondary sort: largest deficit (fullQuantity - quantity)
-          const deficitA = a.fullQuantity - a.quantity;
-          const deficitB = b.fullQuantity - b.quantity;
+          // Secondary sort: largest deficit (full_quantity - quantity)
+          const deficitA = a.full_quantity - a.current_quantity;
+          const deficitB = b.full_quantity - b.current_quantity;
           return deficitB - deficitA;
         });
         break;
     }
 
-    return processedItems;
+    return filteredItems;
   });
 
   return (
@@ -121,14 +110,16 @@ export default function ItemsPage() {
 
       {/* Filter and Sort Controls */}
       <div class="mb-6 flex flex-col gap-4 sm:flex-row">
-        <div class="flex-grow">
+        <div class="grow">
           <Input
+            disabled={itemsQuery.isLoading()}
             placeholder="Filter items by name..."
-            value={filter()}
-            onInput={(e) => setFilter(e.currentTarget.value)}
+            value={nameFilter()}
+            onInput={(e) => setNameFilter(e.currentTarget.value)}
           />
         </div>
         <Select
+          disabled={itemsQuery.isLoading()}
           value={sortBy()}
           onChange={(value) => value && setSortBy(value)}
           options={["missing", "name", "stock"]}
@@ -147,7 +138,17 @@ export default function ItemsPage() {
 
       {/* Items Grid */}
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <For each={filteredAndSortedItems()} fallback={<p>No items found.</p>}>
+        <For
+          each={filteredAndSortedItems()}
+          fallback={
+            <Show
+              when={itemsQuery.isLoading()}
+              fallback={<p>No items found.</p>}
+            >
+              <p>Loading...</p>
+            </Show>
+          }
+        >
           {(item) => <ItemCard item={item} />}
         </For>
       </div>

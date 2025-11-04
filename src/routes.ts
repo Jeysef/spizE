@@ -2,7 +2,7 @@ import type { RouteDefinition } from "@solidjs/router";
 import { lazy } from "solid-js";
 import ItemData from "~/pages/item.data";
 import AboutData from "./pages/about.data";
-import Home from "./pages/home";
+import Home from "./pages/home/home.vm";
 
 export const routeNames = {
   "/": "Dashboard",
@@ -31,7 +31,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/items/add",
-    component: lazy(() => import("./pages/ItemAdd")),
+    component: lazy(() => import("./pages/item/new")),
   },
   {
     path: "/item/:id",
