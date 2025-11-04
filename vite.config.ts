@@ -7,7 +7,6 @@ import { validateEnv } from "./src/env.schema";
 
 export default defineConfig(({ mode }) => {
   const env = validateEnv(loadEnv(mode, process.cwd()));
-  console.log("🚀 ~ env:", env);
 
   return {
     plugins: [devtools(), tailwindcss(), solidPlugin()],
@@ -23,6 +22,9 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: "esnext",
+      rolupOptions: {
+        external: ["lucide-solid"]
+      }
     },
     resolve: {
       alias: {
