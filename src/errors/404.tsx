@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import ConstructionIcon from "lucide-solid/icons/Construction";
+import ConstructionIcon from "lucide-solid/icons/construction";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Empty,
