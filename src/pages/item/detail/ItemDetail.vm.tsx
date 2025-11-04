@@ -10,13 +10,15 @@ import {
   createItemsCollectionOptions,
 } from "~/db/collections";
 import { merge } from "~/lib/utils";
+import { useItems } from "~/providers/items/items.hooks";
 
 export function ItemDetailPageVM() {
   const params = useParams();
   // use zod to validate the id
   const itemId = z.coerce.number().positive().min(1).parse(params.id);
   const [user] = useUser();
-  const collection = createItemsCollectionOptions(() => user().id);
+  // const collection = createItemsCollectionOptions(() => user().id);
+  const collection = useItems();
   const itemsQuery = useLiveQuery((q) =>
     q
       .from({ items: collection })
@@ -42,13 +44,17 @@ export function ItemDetailPageVM() {
   return (
     <Show when={itemsQuery.data?.[0]} keyed>
       {(data) => (
-        <ItemDetailPage
-          item={data}
-          handleDelete={() => {}}
-          onError={() => {}}
-          onSubmit={handleSubmit}
-          categories={categoriesQuery.data}
-        />
+        <Show when={categoriesQuery.data} keyed>
+          {(categoriesData) => (
+            <ItemDetailPage
+              item={data}
+              handleDelete={() => {}}
+              onError={() => {}}
+              onSubmit={handleSubmit}
+              categories={categoriesData}
+            />
+          )}
+        </Show>
       )}
     </Show>
   );

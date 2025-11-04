@@ -1,11 +1,8 @@
 import { A } from "@solidjs/router";
-import { createForm } from "@tanstack/solid-form";
 import ChevronLeft from "lucide-solid/icons/chevron-left";
-import { Show } from "solid-js";
 import { z } from "zod";
 import type { CategoryResponse, ItemCreate, ItemResponse } from "~/client";
 import { zItemCreate } from "~/client/zod.gen";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,16 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Progress } from "~/components/ui/progress";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { ProgressBar } from "~/pages/item/components/ProgressBar";
+import { useAppForm } from "~/pages/item/detail/itemForm";
 
 interface ItemDetailPageProps {
   item: ItemResponse;
@@ -35,7 +24,26 @@ interface ItemDetailPageProps {
 
 // ItemDetail component with integrated TanStack Form
 export default function ItemDetailPage(props: ItemDetailPageProps) {
-  const form = createForm(() => ({
+  console.log("🚀 ~ ItemDetailPage ~ props.item:", props.item);
+  console.log("🚀 ~ ItemDetailPage ~ props.categories:", props.categories);
+  // const form = createForm(() => ({
+  //   defaultValues: {
+  //     name: props.item.name,
+  //     current_quantity: props.item.current_quantity,
+  //     full_quantity: props.item.full_quantity,
+  //     category_id: props.item.category_id,
+  //     note: props.item.note,
+  //   } satisfies ItemCreate,
+  //   onSubmit: async ({ value }) => {
+  //     await props.onSubmit?.(value);
+  //   },
+
+  //   validators: {
+  //     onSubmit: zItemCreate,
+  //   },
+  // }));
+
+  const form = useAppForm(() => ({
     defaultValues: {
       name: props.item.name,
       current_quantity: props.item.current_quantity,
@@ -79,107 +87,41 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
           </CardHeader>
           <CardContent class="grid gap-6">
             {/* Field for Item Name */}
-            <form.Field
+            <form.AppField
               name="name"
               validators={{
                 onChange: z
                   .string()
                   .min(2, "Item name must be at least 2 characters long."),
               }}
-            >
-              {(field) => (
-                <div class="grid gap-2">
-                  <Label for={field().name}>Item Name</Label>
-                  <Input
-                    id={field().name}
-                    name={field().name}
-                    value={field().state.value}
-                    onBlur={field().handleBlur}
-                    onInput={(e) => field().handleChange(e.currentTarget.value)}
-                    placeholder="e.g., Whole Wheat Bread"
-                  />
-                  <Show when={!field().state.meta.isValid}>
-                    {/* <p class="text-sm text-destructive"> */}
-                    <em role="alert">{field().state.meta.errors.join(", ")}</em>
-                    {/* </p> */}
-                  </Show>
-                </div>
-              )}
-            </form.Field>
+              children={(field) => <field.ItemName />}
+            />
 
             {/* Fields for Quantity */}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Current Quantity Field */}
-              <form.Field
+              <form.AppField
                 name="current_quantity"
                 validators={{
                   onChange: z.number().min(0, "Quantity cannot be negative."),
                 }}
-              >
-                {(field) => (
-                  <div class="grid gap-2">
-                    <Label for={field().name}>Current Quantity</Label>
-                    <Input
-                      id={field().name}
-                      name={field().name}
-                      type="number"
-                      value={field().state.value}
-                      onBlur={field().handleBlur}
-                      onInput={(e) =>
-                        field().handleChange(
-                          parseInt(e.currentTarget.value.trim())
-                        )
-                      }
-                    />
-                    <Show when={field().state.meta.errors}>
-                      <p class="text-sm text-destructive">
-                        {field()
-                          .state.meta.errors.map((error) => error?.message)
-                          .join(", ")}
-                      </p>
-                    </Show>
-                  </div>
-                )}
-              </form.Field>
+                children={(field) => <field.ItemCount />}
+              />
 
               {/* Target Quantity Field */}
-              <form.Field
+              <form.AppField
                 name="full_quantity"
                 validators={{
                   onChange: z
                     .number()
                     .min(1, "Target quantity must be greater than 0."),
                 }}
-              >
-                {(field) => (
-                  <div class="grid gap-2">
-                    <Label for={field().name}>Target Quantity</Label>
-                    <Input
-                      id={field().name}
-                      name={field().name}
-                      type="number"
-                      value={field().state.value}
-                      onBlur={field().handleBlur}
-                      onInput={(e) =>
-                        field().handleChange(
-                          Number(e.currentTarget.value.trim())
-                        )
-                      }
-                    />
-                    <Show when={field().state.meta.errors}>
-                      <p class="text-sm text-destructive">
-                        {field()
-                          .state.meta.errors.map((error) => error?.message)
-                          .join(", ")}
-                      </p>
-                    </Show>
-                  </div>
-                )}
-              </form.Field>
+                children={(field) => <field.ItemCount />}
+              />
             </div>
 
             {/* Category Field */}
-            <form.Field
+            <form.AppField
               name="category_id"
               validators={{
                 onChange: z
@@ -190,88 +132,21 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
                     "Category ID must be less than the number of categories."
                   ),
               }}
-            >
-              {(field) => (
-                <div class="grid gap-2">
-                  <Label for={field().name}>Category</Label>
-                  <Select
-                    value={{
-                      value: field().state.value,
-                      label: props.categories.find(
-                        (category) => category.id === field().state.value
-                      )?.name,
-                    }}
-                    placeholder="Select a category"
-                    onBlur={field().handleBlur}
-                    onChange={(value) =>
-                      value && field().handleChange(value.value)
-                    }
-                    options={props.categories.map((category) => ({
-                      value: category.id,
-                      label: category.name,
-                    }))}
-                    optionValue="value"
-                    optionTextValue="label"
-                    itemComponent={(props) => (
-                      <SelectItem item={props.item}>
-                        {props.item.rawValue.label}
-                      </SelectItem>
-                    )}
-                  >
-                    <SelectTrigger aria-label="Fruit" class="w-[180px]">
-                      <SelectValue<{
-                        value: number;
-                        label: string;
-                      }>>
-                        {(state) => state.selectedOption().label}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent />
-                  </Select>
-                  <Show when={field().state.meta.errors.length > 0}>
-                    <p class="text-sm text-destructive">
-                      {field().state.meta.errors.join(", ")}
-                    </p>
-                  </Show>
-                </div>
+              children={(field) => (
+                <field.CategorySelect categories={props.categories} />
               )}
-            </form.Field>
+            />
 
             {/* Stock Level Indicator */}
-            <div class="grid gap-2">
-              <Label>Stock Level</Label>
-              <Progress
-                value={
-                  (props.item.current_quantity / props.item.full_quantity) * 100
-                }
-              />
-              <p class="text-center text-sm text-muted-foreground">
-                {`${props.item.current_quantity} / ${props.item.full_quantity}`}
-              </p>
-            </div>
+            <ProgressBar
+              current_quantity={props.item.current_quantity}
+              full_quantity={props.item.full_quantity}
+            />
           </CardContent>
           <CardFooter class="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={props.handleDelete}
-            >
-              Delete
-            </Button>
-            <form.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting,
-              })}
-            >
-              {(state) => {
-                return (
-                  <Button type="submit" disabled={!state().canSubmit}>
-                    {state().isSubmitting ? "..." : "Submit"}
-                  </Button>
-                );
-              }}
-            </form.Subscribe>
+            <form.AppForm>
+              <form.Buttons handleDelete={props.handleDelete} />
+            </form.AppForm>
           </CardFooter>
         </Card>
       </form>

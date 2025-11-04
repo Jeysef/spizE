@@ -1,11 +1,8 @@
 import { A } from "@solidjs/router";
-import { createForm } from "@tanstack/solid-form";
 import ChevronLeft from "lucide-solid/icons/chevron-left";
-import { Show } from "solid-js";
 import { z } from "zod";
-import type { ItemCreate } from "~/client";
+import type { CategoryResponse, ItemCreate } from "~/client";
 import { zItemCreate } from "~/client/zod.gen";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,17 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { TextField, TextFieldInput } from "~/components/ui/text-field";
+import { ProgressBar } from "~/pages/item/components/ProgressBar";
+import { useAppForm } from "~/pages/item/detail/itemForm";
 
 interface ItemNewPageProps {
   onSubmit?: (values: ItemCreate) => Promise<void>;
   onError?: (error: Error) => void;
+  categories: CategoryResponse[];
 }
 
 export default function ItemNewPage(props: ItemNewPageProps) {
-  const form = createForm(() => ({
+  const form = useAppForm(() => ({
     defaultValues: {
       name: "",
       current_quantity: 0,
@@ -44,7 +41,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
     <main class="container mx-auto max-w-2xl px-4 py-8">
       <A
         href="/"
-        class="mb-4 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+        class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center"
       >
         <ChevronLeft class="size-5" /> Back to Dashboard
       </A>
@@ -59,142 +56,75 @@ export default function ItemNewPage(props: ItemNewPageProps) {
         <Card>
           <CardHeader>
             <CardTitle class="text-3xl font-bold tracking-tight">
-              Add New Pantry Item
+              Add new pantry item
             </CardTitle>
             <CardDescription>
-              Fill in the details to add a new item to your pantry.
+              View and edit the details of this pantry item.
             </CardDescription>
           </CardHeader>
           <CardContent class="grid gap-6">
             {/* Field for Item Name */}
-            <form.Field
+            <form.AppField
               name="name"
               validators={{
                 onChange: z
                   .string()
                   .min(2, "Item name must be at least 2 characters long."),
               }}
-            >
-              {(field) => (
-                <div class="grid gap-2">
-                  <Label for={field().name}>Item Name</Label>
-                  <Input
-                    id={field().name}
-                    name={field().name}
-                    value={field().state.value}
-                    onBlur={field().handleBlur}
-                    onInput={(e) => field().handleChange(e.currentTarget.value)}
-                    placeholder="e.g., All-Purpose Flour"
-                  />
-                  <Show when={field().state.meta.errors.length > 0}>
-                    <p class="text-sm text-destructive">
-                      {field().state.meta.errors.join(", ")}
-                    </p>
-                  </Show>
-                </div>
-              )}
-            </form.Field>
+              children={(field) => <field.ItemName />}
+            />
 
             {/* Fields for Quantity */}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Current Quantity Field */}
-              <form.Field
+              <form.AppField
                 name="current_quantity"
                 validators={{
                   onChange: z.number().min(0, "Quantity cannot be negative."),
                 }}
-              >
-                {(field) => (
-                  <div class="grid gap-2">
-                    <Label for={field().name}>Current Quantity</Label>
-                    <Input
-                      id={field().name}
-                      name={field().name}
-                      type="number"
-                      value={field().state.value}
-                      onBlur={field().handleBlur}
-                      onInput={(e) =>
-                        field().handleChange(
-                          parseInt(e.currentTarget.value.trim(), 10) || 0
-                        )
-                      }
-                    />
-                    <Show when={field().state.meta.errors.length > 0}>
-                      <p class="text-sm text-destructive">
-                        {field().state.meta.errors.join(", ")}
-                      </p>
-                    </Show>
-                  </div>
-                )}
-              </form.Field>
+                children={(field) => <field.ItemCount />}
+              />
 
               {/* Target Quantity Field */}
-              <form.Field
+              <form.AppField
                 name="full_quantity"
                 validators={{
                   onChange: z
                     .number()
-                    .min(1, "Target quantity must be at least 1."),
+                    .min(1, "Target quantity must be greater than 0."),
                 }}
-              >
-                {(field) => (
-                  <div class="grid gap-2">
-                    <Label for={field().name}>Target Quantity</Label>
-                    <Input
-                      id={field().name}
-                      name={field().name}
-                      type="number"
-                      value={field().state.value}
-                      onBlur={field().handleBlur}
-                      onInput={(e) =>
-                        field().handleChange(
-                          parseInt(e.currentTarget.value.trim(), 10) || 1
-                        )
-                      }
-                    />
-                    <Show when={field().state.meta.errors.length > 0}>
-                      <p class="text-sm text-destructive">
-                        {field().state.meta.errors.join(", ")}
-                      </p>
-                    </Show>
-                  </div>
-                )}
-              </form.Field>
+                children={(field) => <field.ItemCount />}
+              />
             </div>
-            {/* Field for Note */}
-            <form.Field name="note">
-              {(field) => (
-                <div class="grid gap-2">
-                  <Label for={field().name}>Note (Optional)</Label>
-                  <TextField>
-                    <TextFieldInput
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ""}
-                      onBlur={field().handleBlur}
-                      onInput={(e) =>
-                        field().handleChange(e.currentTarget.value)
-                      }
-                      placeholder="e.g., Brand, expiration date, etc."
-                    />
-                  </TextField>
-                </div>
+
+            {/* Category Field */}
+            <form.AppField
+              name="category_id"
+              validators={{
+                onChange: z.number().min(1, "Category ID must be at least 1."),
+                // .max(
+                //   props.categories.length,
+                //   "Category ID must be less than the number of categories."
+                // ),
+              }}
+              children={(field) => (
+                <field.CategorySelect categories={props.categories} />
               )}
-            </form.Field>
+            />
+
+            {/* Stock Level Indicator */}
+            <form.Subscribe
+              selector={({ values: { current_quantity, full_quantity } }) => ({
+                current_quantity,
+                full_quantity,
+              })}
+              children={(props) => <ProgressBar {...props()} />}
+            />
           </CardContent>
           <CardFooter class="flex justify-end gap-2">
-            <form.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting,
-              })}
-            >
-              {(state) => (
-                <Button type="submit" disabled={!state().canSubmit}>
-                  {state().isSubmitting ? "Adding..." : "Add Item"}
-                </Button>
-              )}
-            </form.Subscribe>
+            <form.AppForm>
+              <form.Buttons handleDelete={() => {}} />
+            </form.AppForm>
           </CardFooter>
         </Card>
       </form>

@@ -51,9 +51,11 @@ export const usersCollection = createCollection(
 // );
 export const createItemsCollectionOptions = (
   selectedUserId: Accessor<number>
-) => {
-  return createCollection(
+) =>
+  createCollection(
     queryCollectionOptions({
+      enabled: !!selectedUserId(),
+
       queryKey: getUserItemsUserUserIdItemAllGetQueryKey({
         path: { user_id: selectedUserId() },
       }),
@@ -84,18 +86,26 @@ export const createItemsCollectionOptions = (
         return data;
       },
       // onInsert: async ({ transaction }) => {
-      //   const { original, changes } = transaction.mutations[0];
-      //   const { data } = await createItemUserUserIdItemNewPut({
-      //     path: { user_id: selectedUserId() },
-      //     body: changes,
-      //     throwOnError: true,
-      //   });
-      //   return data;
+      //   await Promise.all(
+      //     transaction.mutations.map((mutation) =>
+      //       api.todos.create(mutation.modified)
+      //     )
+      //   );
+      // },
+      // onInsert: async ({ transaction }) => {
+      //   await Promise.all(
+      //     transaction.mutations.map((mutation) =>
+      //       api.todos.create(mutation.modified)
+      //     )
+      //   );
       // },
       // schema: zGetUserItemsUserUserIdItemAllGetResponse,
     })
   );
-};
+
+export type ItemsCollectionType = ReturnType<
+  typeof createItemsCollectionOptions
+>;
 
 export const categoriesCollection = createCollection(
   queryCollectionOptions({
@@ -111,6 +121,5 @@ export const categoriesCollection = createCollection(
     queryClient,
     getKey: (item: CategoryResponse) => item.id,
     refetchInterval: 10000, // 10 second
-    // schema: zGetCategoriesCategoryAllGetResponse,
   })
 );
