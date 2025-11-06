@@ -3,7 +3,7 @@ import type { UserResponse } from "~/client";
 
 export const INITIAL_USER: UserResponse = {
   id: 1,
-  name: "Unknown",
+  name: "Josef",
 };
 
 const INITIAL_SETTER = () => INITIAL_USER;

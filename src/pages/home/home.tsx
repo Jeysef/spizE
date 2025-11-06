@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 import type { ItemResponse } from "~/client";
-import { PantryItem } from "~/components/PantryItem";
+import { PantryItem } from "~/pages/home/PantryItem";
 import Heading from "~/components/typography/heading";
 import { buttonVariants } from "~/components/ui/button";
 import {
@@ -13,9 +13,17 @@ import {
 } from "~/components/ui/card";
 import { Empty, EmptyContent, EmptyTitle } from "~/components/ui/empty";
 
+interface CardProps {
+  title: string;
+  description: string;
+  items: ItemResponse[];
+  emptyMsg: string;
+  color: string;
+}
+
 interface HomeProps {
-  missingItems: ItemResponse[];
-  lowStockItems: ItemResponse[];
+  cards: CardProps[];
+  loding: boolean;
 }
 
 export default function Home(props: HomeProps) {
@@ -45,73 +53,43 @@ export default function Home(props: HomeProps) {
             </A>
           </CardContent>
         </Card>
-        {/* <CardFooter>
-            <Button variant="outline" class="w-full">
-              Add Item
-            </Button>
-          </CardFooter> */}
-        <Card class="basis-80 shrink">
-          <CardHeader>
-            <CardTitle class="text-destructive">Missing</CardTitle>
-            <CardDescription>3 items need to be added</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul class="divide-y divide-gray-200">
-              <For
-                each={props.missingItems}
-                fallback={
-                  <Empty>
-                    <EmptyContent>
-                      <EmptyTitle>No items missing</EmptyTitle>
-                    </EmptyContent>
-                  </Empty>
-                }
-              >
-                {(item) => (
-                  <li class="flex items-center justify-between py-4 space-x-4">
-                    <PantryItem
-                      name={item.name}
-                      quantity={item.current_quantity}
-                      fullQuantity={item.full_quantity}
-                      id={item.id}
-                    />
-                  </li>
-                )}
-              </For>
-            </ul>
-          </CardContent>
-        </Card>
-        <Card class="basis-80 shrink">
-          <CardHeader>
-            <CardTitle class="text-orange-500">Low stock</CardTitle>
-            <CardDescription>2 items are low in stock</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul class="divide-y divide-gray-200">
-              <For
-                each={props.lowStockItems}
-                fallback={
-                  <Empty>
-                    <EmptyContent>
-                      <EmptyTitle>No items low in stock</EmptyTitle>
-                    </EmptyContent>
-                  </Empty>
-                }
-              >
-                {(item) => (
-                  <li class="flex items-center justify-between py-4 space-x-4">
-                    <PantryItem
-                      name={item.name}
-                      quantity={item.current_quantity}
-                      fullQuantity={item.full_quantity}
-                      id={item.id}
-                    />
-                  </li>
-                )}
-              </For>
-            </ul>
-          </CardContent>
-        </Card>
+        <For each={props.cards}>
+          {(items) => (
+            <Card class="basis-80 shrink">
+              <CardHeader>
+                <CardTitle class={items.color}>{items.title}</CardTitle>
+                <CardDescription>{items.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Show when={!props.loding} fallback={<p>Loading...</p>}>
+                  <ul class="divide-y divide-gray-200">
+                    <For
+                      each={items.items}
+                      fallback={
+                        <Empty>
+                          <EmptyContent>
+                            <EmptyTitle>{items.emptyMsg}</EmptyTitle>
+                          </EmptyContent>
+                        </Empty>
+                      }
+                    >
+                      {(item) => (
+                        <li class="flex items-center justify-between py-4 space-x-4">
+                          <PantryItem
+                            name={item.name}
+                            quantity={item.current_quantity}
+                            fullQuantity={item.full_quantity}
+                            id={item.id}
+                          />
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </Show>
+              </CardContent>
+            </Card>
+          )}
+        </For>
       </div>
     </section>
   );

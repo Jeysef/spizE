@@ -4,12 +4,13 @@ import devtools from "solid-devtools/vite";
 import { defineConfig, loadEnv } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import { validateEnv } from "./src/env.schema";
+import lucidePreprocess from "vite-plugin-lucide-preprocess";
 
 export default defineConfig(({ mode }) => {
   const env = validateEnv(loadEnv(mode, process.cwd()));
 
   return {
-    plugins: [devtools(), tailwindcss(), solidPlugin()],
+    plugins: [lucidePreprocess(), devtools(), tailwindcss(), solidPlugin()],
     server: {
       port: 3000,
       proxy: {
@@ -21,7 +22,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      target: "esnext"
+      target: "esnext",
     },
     resolve: {
       alias: {

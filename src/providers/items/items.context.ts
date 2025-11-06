@@ -1,4 +1,4 @@
-import { createContext } from "solid-js";
+import { type Accessor, createContext } from "solid-js";
 import type { ItemsCollectionType } from "~/db/collections";
 
-export const ItemsContext = createContext<ItemsCollectionType>();
+export const ItemsContext = createContext<Accessor<ItemsCollectionType>>();

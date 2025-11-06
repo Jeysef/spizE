@@ -1,7 +1,7 @@
 import { ItemsContext } from "./items.context";
 import { useUser } from "~/providers/user/user.hooks";
 import { createItemsCollectionOptions } from "~/db/collections";
-import type { ParentProps } from "solid-js";
+import { createMemo, type ParentProps } from "solid-js";
 
 /**
  * Wrap your app with <UserProvider> to provide a global user id signal.
@@ -9,10 +9,11 @@ import type { ParentProps } from "solid-js";
  */
 export function ItemsProvider(props: ParentProps) {
   const [user] = useUser();
+  const itemsCollection = createMemo(() =>
+    createItemsCollectionOptions(() => user().id)
+  );
   return (
-    <ItemsContext.Provider
-      value={createItemsCollectionOptions(() => user().id)}
-    >
+    <ItemsContext.Provider value={itemsCollection}>
       {props.children}
     </ItemsContext.Provider>
   );

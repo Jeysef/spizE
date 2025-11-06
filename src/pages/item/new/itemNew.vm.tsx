@@ -36,8 +36,8 @@ export function ItemNewPageVM() {
       const id = resp as unknown as number;
       console.log("🚀 ~ handleSubmit ~ id:", id);
 
-      await collection.stateWhenReady();
-      collection.utils.writeInsert({
+      await collection().stateWhenReady();
+      collection().utils.writeInsert({
         id: id,
         name: values.name,
         full_quantity: values.full_quantity,
@@ -45,7 +45,7 @@ export function ItemNewPageVM() {
         category_id: values.category_id,
         note: values.note,
       });
-      collection.utils.refetch();
+      collection().utils.refetch();
 
       // TODO: use the mutation response to get the item ID
 

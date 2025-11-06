@@ -1,15 +1,11 @@
 import { useLiveQuery } from "@tanstack/solid-db";
 import { createMemo } from "solid-js";
-import { createItemsCollectionOptions } from "~/db/collections";
 import Home from "~/pages/home/home";
-import { useUser } from "~/providers/user/user.hooks";
+import { useItems } from "~/providers/items/items.hooks";
 
 export default function HomeViewModel() {
-  const [user] = useUser();
-
-  const itemsQuery = useLiveQuery((q) =>
-    q.from({ users: createItemsCollectionOptions(() => user().id) })
-  );
+  const collection = useItems();
+  const itemsQuery = useLiveQuery((q) => q.from({ items: collection() }));
 
   const missingItems = createMemo(() =>
     itemsQuery.data?.filter((item) => item.current_quantity <= 0)
@@ -17,9 +13,27 @@ export default function HomeViewModel() {
 
   const lowStockItems = createMemo(() =>
     itemsQuery.data?.filter(
-      (item) => item.current_quantity < item.full_quantity
+      (item) =>
+        item.current_quantity < item.full_quantity && item.current_quantity > 0
     )
   );
 
-  return <Home missingItems={missingItems()} lowStockItems={lowStockItems()} />;
+  const cards = () => [
+    {
+      title: "Missing",
+      description: `${missingItems().length} items need to be added`,
+      items: missingItems(),
+      emptyMsg: "No items missing",
+      color: "text-destructive",
+    },
+    {
+      title: "Low Stock",
+      description: `${lowStockItems().length} items are low in stock`,
+      items: lowStockItems(),
+      emptyMsg: "No items low in stock",
+      color: "text-orange-500",
+    },
+  ];
+
+  return <Home cards={cards()} loding={itemsQuery.isLoading()} />;
 }

@@ -8,6 +8,7 @@ import { type Component, createSignal, Show } from "solid-js";
 import { buttonVariants } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
+import { useItems } from "~/providers/items/items.hooks";
 
 interface PantryItemProps {
   id: number;
@@ -19,6 +20,14 @@ interface PantryItemProps {
 export const PantryItem: Component<PantryItemProps> = (props) => {
   const [isQuantityEditing, setQuantityEditing] = createSignal(false);
   const [quantity, setQuantity] = createWritableMemo(() => props.quantity);
+
+  const collection = useItems();
+
+  const updateQuantity = () => {
+    collection().update(props.id, (prevItem) => {
+      prevItem.current_quantity = quantity();
+    });
+  };
   return (
     <div class="flex justify-between w-full ">
       <div class="flex items-center gap-2">
@@ -51,7 +60,10 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
           <div class="hover:bg-accent p-0.5 rounded-md">
             <CheckIcon
               class="size-5"
-              on:click={() => setQuantityEditing(false)}
+              on:click={() => {
+                setQuantityEditing(false);
+                updateQuantity();
+              }}
             />
           </div>
           <div class="hover:bg-accent p-0.5 rounded-md">
@@ -70,7 +82,10 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
             min={0}
             value={quantity()}
             size={quantity().toString().split("").length + 1}
-            onInput={(e) => setQuantity(Number(e.currentTarget.value))}
+            onInput={(e) => {
+              const value = Number(e.currentTarget.value);
+              !isNaN(value) && setQuantity(value);
+            }}
             class="invalid:border-red-500 invalid:text-red-600"
           />
           /<span>{props.fullQuantity}</span>

@@ -21,7 +21,7 @@ export function ItemDetailPageVM() {
   const collection = useItems();
   const itemsQuery = useLiveQuery((q) =>
     q
-      .from({ items: collection })
+      .from({ items: collection() })
       .where(({ items }) => eq(items.id, itemId))
       .findOne()
   );
@@ -37,7 +37,7 @@ export function ItemDetailPageVM() {
   // });
 
   const handleSubmit = async (values: ItemCreate) => {
-    const tx = collection.update(itemId, merge(values));
+    const tx = collection().update(itemId, merge(values));
     await tx.isPersisted.promise;
   };
 

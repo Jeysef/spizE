@@ -124,13 +124,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
             <form.AppField
               name="category_id"
               validators={{
-                onChange: z
-                  .number()
-                  .min(1, "Category ID must be at least 1.")
-                  .max(
-                    props.categories.length,
-                    "Category ID must be less than the number of categories."
-                  ),
+                onChange: z.number().min(1, "Category ID must be at least 1."),
               }}
               children={(field) => (
                 <field.CategorySelect categories={props.categories} />

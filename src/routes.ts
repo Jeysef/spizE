@@ -27,7 +27,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/items",
-    component: lazy(() => import("./pages/items/ItemsPage")),
+    component: lazy(() => import("./pages/items")),
   },
   {
     path: "/items/add",
@@ -40,7 +40,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/shopping",
-    component: lazy(() => import("./pages/shopping/ShoppingPage")),
+    component: lazy(() => import("./pages/shopping")),
   },
   {
     path: "**",
