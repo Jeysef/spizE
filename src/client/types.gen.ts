@@ -23,6 +23,30 @@ export type CategoryResponse = {
 };
 
 /**
+ * EventResponse
+ */
+export type EventResponse = {
+    /**
+     * EventType
+     *
+     * Event type
+     */
+    event: 'health_check' | 'item_created' | 'item_updated' | 'item_deleted';
+    /**
+     * UserId
+     *
+     * User ID
+     */
+    user_id: number;
+    /**
+     * ItemId
+     *
+     * Item ID
+     */
+    item_id: number;
+};
+
+/**
  * GenericResponse
  */
 export type GenericResponse = {
@@ -547,10 +571,12 @@ export type SseEndpointSseGetData = {
 
 export type SseEndpointSseGetResponses = {
     /**
-     * Successful Response
+     * A stream of item events.
      */
-    200: unknown;
+    200: EventResponse;
 };
+
+export type SseEndpointSseGetResponse = SseEndpointSseGetResponses[keyof SseEndpointSseGetResponses];
 
 export type HealthCheckHealthGetData = {
     body?: never;

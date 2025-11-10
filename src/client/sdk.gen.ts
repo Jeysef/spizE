@@ -3,7 +3,7 @@
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
 import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutErrors, CreateItemUserUserIdItemNewPutResponses, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteErrors, DeleteItemUserUserIdItemItemIdDeleteResponses, GetCategoriesCategoryAllGetData, GetCategoriesCategoryAllGetErrors, GetCategoriesCategoryAllGetResponses, GetCategoryCategoryCategoryIdGetData, GetCategoryCategoryCategoryIdGetErrors, GetCategoryCategoryCategoryIdGetResponses, GetUserItemsUserUserIdItemAllGetData, GetUserItemsUserUserIdItemAllGetErrors, GetUserItemsUserUserIdItemAllGetResponses, GetUserItemUserUserIdItemItemIdGetData, GetUserItemUserUserIdItemItemIdGetErrors, GetUserItemUserUserIdItemItemIdGetResponses, GetUsersUserAllGetData, GetUsersUserAllGetErrors, GetUsersUserAllGetResponses, GetUserUserUserIdGetData, GetUserUserUserIdGetErrors, GetUserUserUserIdGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SseEndpointSseGetData, SseEndpointSseGetResponses, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchErrors, UpdateItemUserUserIdItemItemIdPatchResponses } from './types.gen';
-import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zSseEndpointSseGetData, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
+import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zSseEndpointSseGetData, zSseEndpointSseGetResponse, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -222,12 +222,17 @@ export const createItemUserUserIdItemNewPut = <ThrowOnError extends boolean = fa
 };
 
 /**
- * Sse Endpoint
+ * Subscribe to Item Events
+ *
+ * Establishes a Server-Sent Events (SSE) connection to receive real-time updates for items.
  */
 export const sseEndpointSseGet = <ThrowOnError extends boolean = false>(options?: Options<SseEndpointSseGetData, ThrowOnError>) => {
-    return (options?.client ?? client).get<SseEndpointSseGetResponses, unknown, ThrowOnError>({
+    return (options?.client ?? client).sse.get<SseEndpointSseGetResponses, unknown, ThrowOnError>({
         requestValidator: async (data) => {
             return await zSseEndpointSseGetData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zSseEndpointSseGetResponse.parseAsync(data);
         },
         security: [
             {

@@ -11,6 +11,20 @@ export const zCategoryResponse = z.object({
 });
 
 /**
+ * EventResponse
+ */
+export const zEventResponse = z.object({
+    event: z.enum([
+        'health_check',
+        'item_created',
+        'item_updated',
+        'item_deleted'
+    ]),
+    user_id: z.int(),
+    item_id: z.int()
+});
+
+/**
  * GenericResponse
  */
 export const zGenericResponse = z.object({
@@ -209,6 +223,11 @@ export const zSseEndpointSseGetData = z.object({
     path: z.optional(z.never()),
     query: z.optional(z.never())
 });
+
+/**
+ * A stream of item events.
+ */
+export const zSseEndpointSseGetResponse = zEventResponse;
 
 export const zHealthCheckHealthGetData = z.object({
     body: z.optional(z.never()),

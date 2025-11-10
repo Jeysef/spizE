@@ -3,8 +3,8 @@
 import { type MutationOptions, queryOptions } from '@tanstack/solid-query';
 
 import { client } from '../client.gen';
-import { createItemUserUserIdItemNewPut, deleteItemUserUserIdItemItemIdDelete, getCategoriesCategoryAllGet, getCategoryCategoryCategoryIdGet, getUserItemsUserUserIdItemAllGet, getUserItemUserUserIdItemItemIdGet, getUsersUserAllGet, getUserUserUserIdGet, healthCheckHealthGet, type Options, sseEndpointSseGet, updateItemUserUserIdItemItemIdPatch } from '../sdk.gen';
-import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutError, CreateItemUserUserIdItemNewPutResponse, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteError, DeleteItemUserUserIdItemItemIdDeleteResponse, GetCategoriesCategoryAllGetData, GetCategoryCategoryCategoryIdGetData, GetUserItemsUserUserIdItemAllGetData, GetUserItemUserUserIdItemItemIdGetData, GetUsersUserAllGetData, GetUserUserUserIdGetData, HealthCheckHealthGetData, SseEndpointSseGetData, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchError, UpdateItemUserUserIdItemItemIdPatchResponse } from '../types.gen';
+import { createItemUserUserIdItemNewPut, deleteItemUserUserIdItemItemIdDelete, getCategoriesCategoryAllGet, getCategoryCategoryCategoryIdGet, getUserItemsUserUserIdItemAllGet, getUserItemUserUserIdItemItemIdGet, getUsersUserAllGet, getUserUserUserIdGet, healthCheckHealthGet, type Options, updateItemUserUserIdItemItemIdPatch } from '../sdk.gen';
+import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutError, CreateItemUserUserIdItemNewPutResponse, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteError, DeleteItemUserUserIdItemItemIdDeleteResponse, GetCategoriesCategoryAllGetData, GetCategoryCategoryCategoryIdGetData, GetUserItemsUserUserIdItemAllGetData, GetUserItemUserUserIdItemItemIdGetData, GetUsersUserAllGetData, GetUserUserUserIdGetData, HealthCheckHealthGetData, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchError, UpdateItemUserUserIdItemItemIdPatchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -210,26 +210,6 @@ export const createItemUserUserIdItemNewPutMutation = (options?: Partial<Options
         }
     };
     return mutationOptions;
-};
-
-export const sseEndpointSseGetQueryKey = (options?: Options<SseEndpointSseGetData>) => createQueryKey('sseEndpointSseGet', options);
-
-/**
- * Sse Endpoint
- */
-export const sseEndpointSseGetOptions = (options?: Options<SseEndpointSseGetData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await sseEndpointSseGet({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: sseEndpointSseGetQueryKey(options)
-    });
 };
 
 export const healthCheckHealthGetQueryKey = (options?: Options<HealthCheckHealthGetData>) => createQueryKey('healthCheckHealthGet', options);
