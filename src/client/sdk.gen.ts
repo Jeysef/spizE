@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutErrors, CreateItemUserUserIdItemNewPutResponses, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteErrors, DeleteItemUserUserIdItemItemIdDeleteResponses, GetCategoriesCategoryAllGetData, GetCategoriesCategoryAllGetResponses, GetCategoryCategoryCategoryIdGetData, GetCategoryCategoryCategoryIdGetErrors, GetCategoryCategoryCategoryIdGetResponses, GetUserItemsUserUserIdItemAllGetData, GetUserItemsUserUserIdItemAllGetErrors, GetUserItemsUserUserIdItemAllGetResponses, GetUserItemUserUserIdItemItemIdGetData, GetUserItemUserUserIdItemItemIdGetErrors, GetUserItemUserUserIdItemItemIdGetResponses, GetUsersUserAllGetData, GetUsersUserAllGetResponses, GetUserUserUserIdGetData, GetUserUserUserIdGetErrors, GetUserUserUserIdGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchErrors, UpdateItemUserUserIdItemItemIdPatchResponses } from './types.gen';
-import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
+import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutErrors, CreateItemUserUserIdItemNewPutResponses, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteErrors, DeleteItemUserUserIdItemItemIdDeleteResponses, GetCategoriesCategoryAllGetData, GetCategoriesCategoryAllGetErrors, GetCategoriesCategoryAllGetResponses, GetCategoryCategoryCategoryIdGetData, GetCategoryCategoryCategoryIdGetErrors, GetCategoryCategoryCategoryIdGetResponses, GetUserItemsUserUserIdItemAllGetData, GetUserItemsUserUserIdItemAllGetErrors, GetUserItemsUserUserIdItemAllGetResponses, GetUserItemUserUserIdItemItemIdGetData, GetUserItemUserUserIdItemItemIdGetErrors, GetUserItemUserUserIdItemItemIdGetResponses, GetUsersUserAllGetData, GetUsersUserAllGetErrors, GetUsersUserAllGetResponses, GetUserUserUserIdGetData, GetUserUserUserIdGetErrors, GetUserUserUserIdGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SseEndpointSseGetData, SseEndpointSseGetResponses, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchErrors, UpdateItemUserUserIdItemItemIdPatchResponses } from './types.gen';
+import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zSseEndpointSseGetData, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -23,7 +23,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * Get Users
  */
 export const getUsersUserAllGet = <ThrowOnError extends boolean = false>(options?: Options<GetUsersUserAllGetData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetUsersUserAllGetResponses, unknown, ThrowOnError>({
+    return (options?.client ?? client).get<GetUsersUserAllGetResponses, GetUsersUserAllGetErrors, ThrowOnError>({
         requestValidator: async (data) => {
             return await zGetUsersUserAllGetData.parseAsync(data);
         },
@@ -67,7 +67,7 @@ export const getUserUserUserIdGet = <ThrowOnError extends boolean = false>(optio
  * Get Categories
  */
 export const getCategoriesCategoryAllGet = <ThrowOnError extends boolean = false>(options?: Options<GetCategoriesCategoryAllGetData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetCategoriesCategoryAllGetResponses, unknown, ThrowOnError>({
+    return (options?.client ?? client).get<GetCategoriesCategoryAllGetResponses, GetCategoriesCategoryAllGetErrors, ThrowOnError>({
         requestValidator: async (data) => {
             return await zGetCategoriesCategoryAllGetData.parseAsync(data);
         },
@@ -218,6 +218,25 @@ export const createItemUserUserIdItemNewPut = <ThrowOnError extends boolean = fa
             'Content-Type': 'application/json',
             ...options.headers
         }
+    });
+};
+
+/**
+ * Sse Endpoint
+ */
+export const sseEndpointSseGet = <ThrowOnError extends boolean = false>(options?: Options<SseEndpointSseGetData, ThrowOnError>) => {
+    return (options?.client ?? client).get<SseEndpointSseGetResponses, unknown, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zSseEndpointSseGetData.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/sse',
+        ...options
     });
 };
 

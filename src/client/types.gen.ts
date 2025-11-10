@@ -177,9 +177,18 @@ export type GetUsersUserAllGetData = {
     url: '/user/all';
 };
 
+export type GetUsersUserAllGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
+};
+
+export type GetUsersUserAllGetError = GetUsersUserAllGetErrors[keyof GetUsersUserAllGetErrors];
+
 export type GetUsersUserAllGetResponses = {
     /**
-     * Response Get Users User All Get
+     * Response 200 Get Users User All Get
      *
      * Successful Response
      */
@@ -204,6 +213,10 @@ export type GetUserUserUserIdGetData = {
 
 export type GetUserUserUserIdGetErrors = {
     /**
+     * Not Found
+     */
+    404: GenericResponse;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -227,9 +240,18 @@ export type GetCategoriesCategoryAllGetData = {
     url: '/category/all';
 };
 
+export type GetCategoriesCategoryAllGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
+};
+
+export type GetCategoriesCategoryAllGetError = GetCategoriesCategoryAllGetErrors[keyof GetCategoriesCategoryAllGetErrors];
+
 export type GetCategoriesCategoryAllGetResponses = {
     /**
-     * Response Get Categories Category All Get
+     * Response 200 Get Categories Category All Get
      *
      * Successful Response
      */
@@ -253,6 +275,10 @@ export type GetCategoryCategoryCategoryIdGetData = {
 };
 
 export type GetCategoryCategoryCategoryIdGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
     /**
      * Validation Error
      */
@@ -286,6 +312,10 @@ export type GetUserItemsUserUserIdItemAllGetData = {
 
 export type GetUserItemsUserUserIdItemAllGetErrors = {
     /**
+     * Not Found
+     */
+    404: GenericResponse;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -295,7 +325,7 @@ export type GetUserItemsUserUserIdItemAllGetError = GetUserItemsUserUserIdItemAl
 
 export type GetUserItemsUserUserIdItemAllGetResponses = {
     /**
-     * Response Get User Items User  User Id  Item All Get
+     * Response 200 Get User Items User  User Id  Item All Get
      *
      * Successful Response
      */
@@ -325,6 +355,10 @@ export type DeleteItemUserUserIdItemItemIdDeleteData = {
 };
 
 export type DeleteItemUserUserIdItemItemIdDeleteErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
     /**
      * Validation Error
      */
@@ -363,6 +397,10 @@ export type GetUserItemUserUserIdItemItemIdGetData = {
 };
 
 export type GetUserItemUserUserIdItemItemIdGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
     /**
      * Validation Error
      */
@@ -433,6 +471,10 @@ export type UpdateItemUserUserIdItemItemIdPatchData = {
 
 export type UpdateItemUserUserIdItemItemIdPatchErrors = {
     /**
+     * Not Found
+     */
+    404: GenericResponse;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -468,6 +510,10 @@ export type CreateItemUserUserIdItemNewPutData = {
 
 export type CreateItemUserUserIdItemNewPutErrors = {
     /**
+     * Not Found
+     */
+    404: GenericResponse;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -477,12 +523,34 @@ export type CreateItemUserUserIdItemNewPutError = CreateItemUserUserIdItemNewPut
 
 export type CreateItemUserUserIdItemNewPutResponses = {
     /**
+     * Response Create Item User  User Id  Item New Put
+     *
      * Successful Response
      */
-    200: GenericResponse;
+    200: number;
+    /**
+     * Response 201 Create Item User  User Id  Item New Put
+     *
+     * Created
+     */
+    201: number;
 };
 
 export type CreateItemUserUserIdItemNewPutResponse = CreateItemUserUserIdItemNewPutResponses[keyof CreateItemUserUserIdItemNewPutResponses];
+
+export type SseEndpointSseGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sse';
+};
+
+export type SseEndpointSseGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type HealthCheckHealthGetData = {
     body?: never;

@@ -81,7 +81,7 @@ export const zGetUsersUserAllGetData = z.object({
 });
 
 /**
- * Response Get Users User All Get
+ * Response 200 Get Users User All Get
  *
  * Successful Response
  */
@@ -107,7 +107,7 @@ export const zGetCategoriesCategoryAllGetData = z.object({
 });
 
 /**
- * Response Get Categories Category All Get
+ * Response 200 Get Categories Category All Get
  *
  * Successful Response
  */
@@ -135,7 +135,7 @@ export const zGetUserItemsUserUserIdItemAllGetData = z.object({
 });
 
 /**
- * Response Get User Items User  User Id  Item All Get
+ * Response 200 Get User Items User  User Id  Item All Get
  *
  * Successful Response
  */
@@ -198,9 +198,17 @@ export const zCreateItemUserUserIdItemNewPutData = z.object({
 });
 
 /**
+ * Response Create Item User  User Id  Item New Put
+ *
  * Successful Response
  */
-export const zCreateItemUserUserIdItemNewPutResponse = zGenericResponse;
+export const zCreateItemUserUserIdItemNewPutResponse = z.int();
+
+export const zSseEndpointSseGetData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
 
 export const zHealthCheckHealthGetData = z.object({
     body: z.optional(z.never()),
