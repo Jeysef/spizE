@@ -36,7 +36,7 @@ export const usersCollection = createCollection(
     queryKey: getUsersUserAllGetQueryKey(),
     queryClient,
     getKey: (item: UserResponse) => item.id,
-    // refetchInterval: 10000, // 10 second
+    refetchInterval: 10000, // 10 second
     // schema: zGetUsersUserAllGetResponse,
   })
 );
@@ -72,7 +72,7 @@ export const createItemsCollectionOptions = (
         return data;
       },
 
-      // refetchInterval: 1000, // 1 second
+      refetchInterval: 5000, // 5 second
       getKey: (item: ItemResponse) => item.id,
       onUpdate: async ({ transaction }) => {
         const { original, changes } = transaction.mutations[0];
@@ -142,6 +142,6 @@ export const categoriesCollection = createCollection(
     },
     queryClient,
     getKey: (item: CategoryResponse) => item.id,
-    // refetchInterval: 10000, // 10 second
+    refetchInterval: 20000, // 20 second
   })
 );
