@@ -4,11 +4,15 @@ import { Label } from "~/components/ui/label";
 import { useFieldContext } from "~/hooks/form";
 import { ErrorMessage } from "~/pages/item/components/ErrorMessge";
 
-export function ItemCount() {
+interface ItemCountProps {
+  name: string;
+}
+
+export function ItemCount(props: ItemCountProps) {
   const field = useFieldContext<number>();
   return (
     <div class="grid gap-2">
-      <Label for={field().name}>Current Quantity</Label>
+      <Label for={field().name}>{props.name}</Label>
       <Input
         id={field().name}
         name={field().name}

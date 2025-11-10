@@ -82,7 +82,9 @@ export default function ItemNewPage(props: ItemNewPageProps) {
                 validators={{
                   onChange: z.number().min(0, "Quantity cannot be negative."),
                 }}
-                children={(field) => <field.ItemCount />}
+                children={(field) => (
+                  <field.ItemCount name="Current quantity" />
+                )}
               />
 
               {/* Target Quantity Field */}
@@ -93,7 +95,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
                     .number()
                     .min(1, "Target quantity must be greater than 0."),
                 }}
-                children={(field) => <field.ItemCount />}
+                children={(field) => <field.ItemCount name="Full quantity" />}
               />
             </div>
 
