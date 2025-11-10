@@ -74,19 +74,23 @@ export const createItemsCollectionOptions = (
 
       getKey: (item: ItemResponse) => item.id,
       onUpdate: async ({ transaction }) => {
-        const { original, changes } = transaction.mutations[0];
-        const { data } = await updateItemUserUserIdItemItemIdPatch({
-          path: { user_id: selectedUserId(), item_id: original.id },
-          query: {
-            quantity: changes.current_quantity,
-            full_quantity: changes.full_quantity,
-            category_id: changes.category_id,
-            note: changes.note,
-            name: changes.name,
-          },
-          throwOnError: true,
-        });
-        return data;
+        await Promise.all(
+          transaction.mutations.map((mutation) =>
+            updateItemUserUserIdItemItemIdPatch({
+              path: {
+                user_id: selectedUserId(),
+                item_id: mutation.modified.id,
+              },
+              query: {
+                quantity: mutation.changes.current_quantity,
+                full_quantity: mutation.changes.full_quantity,
+                category_id: mutation.changes.category_id,
+                note: mutation.changes.note,
+                name: mutation.changes.name,
+              },
+            })
+          )
+        );
       },
       onDelete: async ({ transaction }) => {
         await Promise.all(
