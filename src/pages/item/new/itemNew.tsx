@@ -112,6 +112,14 @@ export default function ItemNewPage(props: ItemNewPageProps) {
               )}
             />
 
+            <form.AppField
+              name="note"
+              validators={{
+                onChange: z.string(),
+              }}
+              children={(field) => <field.ItemNote />}
+            />
+
             {/* Stock Level Indicator */}
             <form.Subscribe
               selector={({ values: { current_quantity, full_quantity } }) => ({

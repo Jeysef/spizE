@@ -16,16 +16,20 @@ interface CategorySelectProps {
 
 export function CategorySelect(props: CategorySelectProps) {
   const field = useFieldContext<number>();
+  const value = () => {
+    if (field().state.value === -1) return null;
+    return {
+      value: field().state.value,
+      label: props.categories.find(
+        (category) => category.id === field().state.value
+      )?.name,
+    };
+  };
   return (
     <div class="grid gap-2">
       <Label for={field().name}>Category</Label>
       <Select
-        value={{
-          value: field().state.value,
-          label: props.categories.find(
-            (category) => category.id === field().state.value
-          )?.name,
-        }}
+        value={value()}
         placeholder="Select a category"
         onBlur={field().handleBlur}
         onChange={(value) => value && field().handleChange(value.value)}

@@ -16,7 +16,7 @@ import { useAppForm } from "~/pages/item/detail/itemForm";
 
 interface ItemDetailPageProps {
   item: ItemResponse;
-  onSubmit?: (values: ItemCreate) => Promise<void>;
+  onSubmit: (values: ItemCreate) => Promise<void>;
   onError?: (error: Error) => void;
   handleDelete: () => void;
   categories: CategoryResponse[];
@@ -52,7 +52,7 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
       note: props.item.note,
     } satisfies ItemCreate,
     onSubmit: async ({ value }) => {
-      await props.onSubmit?.(value);
+      await props.onSubmit(value);
     },
 
     validators: {
@@ -124,11 +124,19 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
             <form.AppField
               name="category_id"
               validators={{
-                onChange: z.number().min(1, "Category ID must be at least 1."),
+                onChange: z.number().min(1, "Select a category."),
               }}
               children={(field) => (
                 <field.CategorySelect categories={props.categories} />
               )}
+            />
+
+            <form.AppField
+              name="note"
+              validators={{
+                onChange: z.string(),
+              }}
+              children={(field) => <field.ItemNote />}
             />
 
             {/* Stock Level Indicator */}

@@ -1,9 +1,6 @@
 import { useNavigate } from "@solidjs/router";
-import { createOptimisticAction, useLiveQuery } from "@tanstack/solid-db";
-import { useMutation } from "@tanstack/solid-query";
-import z from "zod";
+import { useLiveQuery } from "@tanstack/solid-db";
 import { type ItemCreate } from "~/client";
-import { createItemUserUserIdItemNewPutMutation } from "~/client/@tanstack/solid-query.gen";
 import { categoriesCollection } from "~/db/collections";
 import ItemNewPage from "~/pages/item/new/itemNew";
 import { useItems } from "~/providers/items/items.hooks";
@@ -18,45 +15,44 @@ export function ItemNewPageVM() {
     q.from({ categories: categoriesCollection })
   );
 
-  const mutation = useMutation(() => createItemUserUserIdItemNewPutMutation());
-
   const handleSubmit = async (values: ItemCreate) => {
-    try {
-      // const tx = collection.insert(values);
-      // await tx.isPersisted.promise;
-      const resp = await mutation.mutateAsync({
-        path: { user_id: user().id },
-        body: values,
-        throwOnError: true,
-        responseValidator: async (data) => {
-          return await z.number().parseAsync(data);
-        },
-      });
+    // try {
+    //   // const tx = collection.insert(values);
+    //   // await tx.isPersisted.promise;
+    //   const resp = await mutation.mutateAsync({
+    //     path: { user_id: user().id },
+    //     body: values,
+    //     throwOnError: true,
+    //     responseValidator: async (data) => {
+    //       return await z.number().parseAsync(data);
+    //     },
+    //   });
+    const keys = Array.from(collection().keys());
+    console.log("🚀 ~ handleSubmit ~ keys:", keys);
+    const nextId = keys.length ? Math.max(...keys) + 1 : 1;
+    console.log("🚀 ~ handleSubmit ~ nextId:", nextId);
+    const tx = collection().insert({ ...values, id: nextId });
+    await tx.isPersisted.promise;
 
-      const id = resp as unknown as number;
-      console.log("🚀 ~ handleSubmit ~ id:", id);
+    // const id = resp as unknown as number;
+    console.log("🚀 ~ handleSubmit ~ id:");
 
-      await collection().stateWhenReady();
-      collection().utils.writeInsert({
-        id: id,
-        name: values.name,
-        full_quantity: values.full_quantity,
-        current_quantity: values.current_quantity,
-        category_id: values.category_id,
-        note: values.note,
-      });
-      collection().utils.refetch();
+    // await collection().stateWhenReady();
+    // collection().utils.writeInsert({
+    //   id: id,
+    //   name: values.name,
+    //   full_quantity: values.full_quantity,
+    //   current_quantity: values.current_quantity,
+    //   category_id: values.category_id,
+    //   note: values.note,
+    // });
+    // collection().utils.refetch();
 
-      // TODO: use the mutation response to get the item ID
+    // TODO: use the mutation response to get the item ID
 
-      // Navigate to the new item's detail page or back to the list
-      // For now, let's navigate back to the dashboard
-      navigate("/");
-    } catch (error) {
-      console.error("Failed to create item:", error);
-      // You could implement more robust error handling here,
-      // like showing a toast notification to the user.
-    }
+    // Navigate to the new item's detail page or back to the list
+    // For now, let's navigate back to the dashboard
+    navigate("/");
   };
 
   // const handleSubmit2 = createOptimisticAction<ItemCreate>({

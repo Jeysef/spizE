@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { useLocation, useNavigate, useParams } from "@solidjs/router";
 import { Show } from "solid-js";
 import ItemDetailPage from "~/pages/item/detail/ItemDetail";
 import { useUser } from "~/providers/user/user.hooks";
@@ -14,6 +14,8 @@ import { useItems } from "~/providers/items/items.hooks";
 
 export function ItemDetailPageVM() {
   const params = useParams();
+  const currentPathname = useLocation().pathname;
+  const navigate = useNavigate();
   // use zod to validate the id
   const itemId = z.coerce.number().positive().min(1).parse(params.id);
   const [user] = useUser();
@@ -41,6 +43,13 @@ export function ItemDetailPageVM() {
     await tx.isPersisted.promise;
   };
 
+  const handleDelete = async () => {
+    const tx = collection().delete(itemId);
+    navigate("/");
+    const response = await tx.isPersisted.promise;
+    response.error && navigate(currentPathname);
+  };
+
   return (
     <Show when={itemsQuery.data?.[0]} keyed>
       {(data) => (
@@ -48,7 +57,7 @@ export function ItemDetailPageVM() {
           {(categoriesData) => (
             <ItemDetailPage
               item={data}
-              handleDelete={() => {}}
+              handleDelete={handleDelete}
               onError={() => {}}
               onSubmit={handleSubmit}
               categories={categoriesData}

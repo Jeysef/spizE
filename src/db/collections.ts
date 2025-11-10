@@ -2,8 +2,11 @@ import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/solid-db";
 import { QueryClient } from "@tanstack/solid-query";
 import type { Accessor } from "solid-js";
+import z from "zod";
 import {
   type CategoryResponse,
+  createItemUserUserIdItemNewPut,
+  deleteItemUserUserIdItemItemIdDelete,
   getCategoriesCategoryAllGet,
   getUserItemsUserUserIdItemAllGet,
   getUsersUserAllGet,
@@ -54,13 +57,12 @@ export const createItemsCollectionOptions = (
 ) =>
   createCollection(
     queryCollectionOptions({
+      queryClient,
       enabled: !!selectedUserId(),
-
       queryKey: getUserItemsUserUserIdItemAllGetQueryKey({
         path: { user_id: selectedUserId() },
       }),
 
-      // 2. The query function gets the user ID from the query key to make the API call.
       queryFn: async ({ queryKey, signal }) => {
         const { data } = await getUserItemsUserUserIdItemAllGet({
           ...queryKey[0],
@@ -70,10 +72,6 @@ export const createItemsCollectionOptions = (
         return data;
       },
 
-      // 3. The query is only enabled when a user ID is actually selected.
-      // enabled: selectedUserId(),
-
-      queryClient,
       // refetchInterval: 1000, // 1 second
       getKey: (item: ItemResponse) => item.id,
       onUpdate: async ({ transaction }) => {
@@ -91,13 +89,31 @@ export const createItemsCollectionOptions = (
         });
         return data;
       },
-      // onInsert: async ({ transaction }) => {
-      //   await Promise.all(
-      //     transaction.mutations.map((mutation) =>
-      //       api.todos.create(mutation.modified)
-      //     )
-      //   );
-      // },
+      onDelete: async ({ transaction }) => {
+        await Promise.all(
+          transaction.mutations.map((mutation) =>
+            deleteItemUserUserIdItemItemIdDelete({
+              path: {
+                user_id: selectedUserId(),
+                item_id: mutation.modified.id,
+              },
+            })
+          )
+        );
+      },
+      onInsert: async ({ transaction }) => {
+        await Promise.all(
+          transaction.mutations.map((mutation) =>
+            createItemUserUserIdItemNewPut({
+              path: { user_id: selectedUserId() },
+              body: mutation.modified,
+              responseValidator: async (data) => {
+                return await z.number().parseAsync(data);
+              },
+            })
+          )
+        );
+      },
       // onInsert: async ({ transaction }) => {
       //   await Promise.all(
       //     transaction.mutations.map((mutation) =>
