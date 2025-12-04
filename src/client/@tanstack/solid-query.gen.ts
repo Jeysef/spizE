@@ -3,8 +3,8 @@
 import { type MutationOptions, queryOptions } from '@tanstack/solid-query';
 
 import { client } from '../client.gen';
-import { createItemUserUserIdItemNewPut, deleteItemUserUserIdItemItemIdDelete, getCategoriesCategoryAllGet, getCategoryCategoryCategoryIdGet, getUserItemsUserUserIdItemAllGet, getUserItemUserUserIdItemItemIdGet, getUsersUserAllGet, getUserUserUserIdGet, healthCheckHealthGet, type Options, updateItemUserUserIdItemItemIdPatch } from '../sdk.gen';
-import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutError, CreateItemUserUserIdItemNewPutResponse, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteError, DeleteItemUserUserIdItemItemIdDeleteResponse, GetCategoriesCategoryAllGetData, GetCategoryCategoryCategoryIdGetData, GetUserItemsUserUserIdItemAllGetData, GetUserItemUserUserIdItemItemIdGetData, GetUsersUserAllGetData, GetUserUserUserIdGetData, HealthCheckHealthGetData, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchError, UpdateItemUserUserIdItemItemIdPatchResponse } from '../types.gen';
+import { createItemUserUserIdItemNewPut, deleteItemUserUserIdItemItemIdDelete, getCategoriesCategoryAllGet, getCategoryCategoryCategoryIdGet, getUnitsUnitAllGet, getUnitUnitUnitIdGet, getUserItemsUserUserIdItemAllGet, getUserItemUserUserIdItemItemIdGet, getUsersUserAllGet, getUserUserUserIdGet, healthCheckHealthGet, type Options, sseEndpointSseGet, updateItemUserUserIdItemItemIdPatch } from '../sdk.gen';
+import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutError, CreateItemUserUserIdItemNewPutResponse, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteError, DeleteItemUserUserIdItemItemIdDeleteResponse, GetCategoriesCategoryAllGetData, GetCategoryCategoryCategoryIdGetData, GetUnitsUnitAllGetData, GetUnitUnitUnitIdGetData, GetUserItemsUserUserIdItemAllGetData, GetUserItemUserUserIdItemItemIdGetData, GetUsersUserAllGetData, GetUserUserUserIdGetData, HealthCheckHealthGetData, SseEndpointSseGetData, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchError, UpdateItemUserUserIdItemItemIdPatchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -118,6 +118,46 @@ export const getCategoryCategoryCategoryIdGetOptions = (options: Options<GetCate
             return data;
         },
         queryKey: getCategoryCategoryCategoryIdGetQueryKey(options)
+    });
+};
+
+export const getUnitsUnitAllGetQueryKey = (options?: Options<GetUnitsUnitAllGetData>) => createQueryKey('getUnitsUnitAllGet', options);
+
+/**
+ * Get Units
+ */
+export const getUnitsUnitAllGetOptions = (options?: Options<GetUnitsUnitAllGetData>) => {
+    return queryOptions({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getUnitsUnitAllGet({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: getUnitsUnitAllGetQueryKey(options)
+    });
+};
+
+export const getUnitUnitUnitIdGetQueryKey = (options: Options<GetUnitUnitUnitIdGetData>) => createQueryKey('getUnitUnitUnitIdGet', options);
+
+/**
+ * Get Unit
+ */
+export const getUnitUnitUnitIdGetOptions = (options: Options<GetUnitUnitUnitIdGetData>) => {
+    return queryOptions({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getUnitUnitUnitIdGet({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: getUnitUnitUnitIdGetQueryKey(options)
     });
 };
 

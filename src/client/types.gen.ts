@@ -109,6 +109,12 @@ export type ItemCreate = {
      */
     category_id: number;
     /**
+     * Unit Id
+     *
+     * Unit ID
+     */
+    unit_id: number;
+    /**
      * Note
      *
      * Item note
@@ -133,6 +139,12 @@ export type ItemResponse = {
      */
     category_id: number;
     /**
+     * Unit Id
+     *
+     * Unit ID
+     */
+    unit_id: number;
+    /**
      * Name
      *
      * Item name
@@ -156,6 +168,36 @@ export type ItemResponse = {
      * Item note
      */
     note: string;
+    /**
+     * Modify By
+     *
+     * ID of the user who last modified the item
+     */
+    modify_by: number;
+    /**
+     * Last Edited
+     *
+     * Timestamp of the last edit
+     */
+    last_edited: string;
+};
+
+/**
+ * UnitResponse
+ */
+export type UnitResponse = {
+    /**
+     * Id
+     *
+     * Unit ID
+     */
+    id: number;
+    /**
+     * Name
+     *
+     * Unit name
+     */
+    name: string;
 };
 
 /**
@@ -320,6 +362,69 @@ export type GetCategoryCategoryCategoryIdGetResponses = {
 
 export type GetCategoryCategoryCategoryIdGetResponse = GetCategoryCategoryCategoryIdGetResponses[keyof GetCategoryCategoryCategoryIdGetResponses];
 
+export type GetUnitsUnitAllGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/unit/all';
+};
+
+export type GetUnitsUnitAllGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
+};
+
+export type GetUnitsUnitAllGetError = GetUnitsUnitAllGetErrors[keyof GetUnitsUnitAllGetErrors];
+
+export type GetUnitsUnitAllGetResponses = {
+    /**
+     * Response 200 Get Units Unit All Get
+     *
+     * Successful Response
+     */
+    200: Array<UnitResponse>;
+};
+
+export type GetUnitsUnitAllGetResponse = GetUnitsUnitAllGetResponses[keyof GetUnitsUnitAllGetResponses];
+
+export type GetUnitUnitUnitIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Unit Id
+         *
+         * The ID of the unit
+         */
+        unit_id: number;
+    };
+    query?: never;
+    url: '/unit/{unit_id}';
+};
+
+export type GetUnitUnitUnitIdGetErrors = {
+    /**
+     * Not Found
+     */
+    404: GenericResponse;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUnitUnitUnitIdGetError = GetUnitUnitUnitIdGetErrors[keyof GetUnitUnitUnitIdGetErrors];
+
+export type GetUnitUnitUnitIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: UnitResponse;
+};
+
+export type GetUnitUnitUnitIdGetResponse = GetUnitUnitUnitIdGetResponses[keyof GetUnitUnitUnitIdGetResponses];
+
 export type GetUserItemsUserUserIdItemAllGetData = {
     body?: never;
     path: {
@@ -483,6 +588,18 @@ export type UpdateItemUserUserIdItemItemIdPatchData = {
          * The new category ID of the item
          */
         category_id?: number;
+        /**
+         * Unit Id
+         *
+         * The new unit ID of the item
+         */
+        unit_id?: number;
+        /**
+         * Modify By
+         *
+         * The modifier of the item
+         */
+        modify_by?: number;
         /**
          * Note
          *

@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutErrors, CreateItemUserUserIdItemNewPutResponses, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteErrors, DeleteItemUserUserIdItemItemIdDeleteResponses, GetCategoriesCategoryAllGetData, GetCategoriesCategoryAllGetErrors, GetCategoriesCategoryAllGetResponses, GetCategoryCategoryCategoryIdGetData, GetCategoryCategoryCategoryIdGetErrors, GetCategoryCategoryCategoryIdGetResponses, GetUserItemsUserUserIdItemAllGetData, GetUserItemsUserUserIdItemAllGetErrors, GetUserItemsUserUserIdItemAllGetResponses, GetUserItemUserUserIdItemItemIdGetData, GetUserItemUserUserIdItemItemIdGetErrors, GetUserItemUserUserIdItemItemIdGetResponses, GetUsersUserAllGetData, GetUsersUserAllGetErrors, GetUsersUserAllGetResponses, GetUserUserUserIdGetData, GetUserUserUserIdGetErrors, GetUserUserUserIdGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SseEndpointSseGetData, SseEndpointSseGetResponses, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchErrors, UpdateItemUserUserIdItemItemIdPatchResponses } from './types.gen';
-import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zSseEndpointSseGetData, zSseEndpointSseGetResponse, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
+import type { CreateItemUserUserIdItemNewPutData, CreateItemUserUserIdItemNewPutErrors, CreateItemUserUserIdItemNewPutResponses, DeleteItemUserUserIdItemItemIdDeleteData, DeleteItemUserUserIdItemItemIdDeleteErrors, DeleteItemUserUserIdItemItemIdDeleteResponses, GetCategoriesCategoryAllGetData, GetCategoriesCategoryAllGetErrors, GetCategoriesCategoryAllGetResponses, GetCategoryCategoryCategoryIdGetData, GetCategoryCategoryCategoryIdGetErrors, GetCategoryCategoryCategoryIdGetResponses, GetUnitsUnitAllGetData, GetUnitsUnitAllGetErrors, GetUnitsUnitAllGetResponses, GetUnitUnitUnitIdGetData, GetUnitUnitUnitIdGetErrors, GetUnitUnitUnitIdGetResponses, GetUserItemsUserUserIdItemAllGetData, GetUserItemsUserUserIdItemAllGetErrors, GetUserItemsUserUserIdItemAllGetResponses, GetUserItemUserUserIdItemItemIdGetData, GetUserItemUserUserIdItemItemIdGetErrors, GetUserItemUserUserIdItemItemIdGetResponses, GetUsersUserAllGetData, GetUsersUserAllGetErrors, GetUsersUserAllGetResponses, GetUserUserUserIdGetData, GetUserUserUserIdGetErrors, GetUserUserUserIdGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SseEndpointSseGetData, SseEndpointSseGetResponses, UpdateItemUserUserIdItemItemIdPatchData, UpdateItemUserUserIdItemItemIdPatchErrors, UpdateItemUserUserIdItemItemIdPatchResponses } from './types.gen';
+import { zCreateItemUserUserIdItemNewPutData, zCreateItemUserUserIdItemNewPutResponse, zDeleteItemUserUserIdItemItemIdDeleteData, zDeleteItemUserUserIdItemItemIdDeleteResponse, zGetCategoriesCategoryAllGetData, zGetCategoriesCategoryAllGetResponse, zGetCategoryCategoryCategoryIdGetData, zGetCategoryCategoryCategoryIdGetResponse, zGetUnitsUnitAllGetData, zGetUnitsUnitAllGetResponse, zGetUnitUnitUnitIdGetData, zGetUnitUnitUnitIdGetResponse, zGetUserItemsUserUserIdItemAllGetData, zGetUserItemsUserUserIdItemAllGetResponse, zGetUserItemUserUserIdItemItemIdGetData, zGetUserItemUserUserIdItemItemIdGetResponse, zGetUsersUserAllGetData, zGetUsersUserAllGetResponse, zGetUserUserUserIdGetData, zGetUserUserUserIdGetResponse, zHealthCheckHealthGetData, zHealthCheckHealthGetResponse, zSseEndpointSseGetData, zSseEndpointSseGetResponse, zUpdateItemUserUserIdItemItemIdPatchData, zUpdateItemUserUserIdItemItemIdPatchResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -103,6 +103,50 @@ export const getCategoryCategoryCategoryIdGet = <ThrowOnError extends boolean = 
             }
         ],
         url: '/category/{category_id}',
+        ...options
+    });
+};
+
+/**
+ * Get Units
+ */
+export const getUnitsUnitAllGet = <ThrowOnError extends boolean = false>(options?: Options<GetUnitsUnitAllGetData, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetUnitsUnitAllGetResponses, GetUnitsUnitAllGetErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zGetUnitsUnitAllGetData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zGetUnitsUnitAllGetResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/unit/all',
+        ...options
+    });
+};
+
+/**
+ * Get Unit
+ */
+export const getUnitUnitUnitIdGet = <ThrowOnError extends boolean = false>(options: Options<GetUnitUnitUnitIdGetData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetUnitUnitUnitIdGetResponses, GetUnitUnitUnitIdGetErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zGetUnitUnitUnitIdGetData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zGetUnitUnitUnitIdGetResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/unit/{unit_id}',
         ...options
     });
 };

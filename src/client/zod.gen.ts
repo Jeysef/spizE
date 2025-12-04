@@ -46,6 +46,7 @@ export const zItemCreate = z.object({
     full_quantity: z.int().gte(1),
     current_quantity: z.int().gte(0),
     category_id: z.int(),
+    unit_id: z.int(),
     note: z.string()
 });
 
@@ -55,10 +56,21 @@ export const zItemCreate = z.object({
 export const zItemResponse = z.object({
     id: z.int(),
     category_id: z.int(),
+    unit_id: z.int(),
     name: z.string(),
     full_quantity: z.int().gte(1),
     current_quantity: z.int().gte(0),
-    note: z.string()
+    note: z.string(),
+    modify_by: z.int(),
+    last_edited: z.iso.datetime()
+});
+
+/**
+ * UnitResponse
+ */
+export const zUnitResponse = z.object({
+    id: z.int(),
+    name: z.string()
 });
 
 /**
@@ -140,6 +152,32 @@ export const zGetCategoryCategoryCategoryIdGetData = z.object({
  */
 export const zGetCategoryCategoryCategoryIdGetResponse = zCategoryResponse;
 
+export const zGetUnitsUnitAllGetData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Response 200 Get Units Unit All Get
+ *
+ * Successful Response
+ */
+export const zGetUnitsUnitAllGetResponse = z.array(zUnitResponse);
+
+export const zGetUnitUnitUnitIdGetData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        unit_id: z.int()
+    }),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zGetUnitUnitUnitIdGetResponse = zUnitResponse;
+
 export const zGetUserItemsUserUserIdItemAllGetData = z.object({
     body: z.optional(z.never()),
     path: z.object({
@@ -194,6 +232,8 @@ export const zUpdateItemUserUserIdItemItemIdPatchData = z.object({
         full_quantity: z.optional(z.int().gte(1)),
         quantity: z.optional(z.int().gte(0)),
         category_id: z.optional(z.int()),
+        unit_id: z.optional(z.int()),
+        modify_by: z.optional(z.int()),
         note: z.optional(z.string())
     }))
 });
