@@ -2,6 +2,7 @@ import { createWritableMemo } from "@solid-primitives/memo";
 import { A } from "@solidjs/router";
 import CheckIcon from "lucide-solid/icons/check";
 import ChevronRight from "lucide-solid/icons/chevron-right";
+import MinusIcon from "lucide-solid/icons/minus";
 import PenIcon from "lucide-solid/icons/pencil";
 import XIcon from "lucide-solid/icons/x";
 import { type Component, createSignal, Show } from "solid-js";
@@ -28,6 +29,17 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
       prevItem.current_quantity = quantity();
     });
   };
+
+  const decreaseQuantity = () => {
+    if (quantity() <= 0) return;
+    const newQuantity = quantity() - 1;
+    setQuantity(newQuantity);
+    // Directly update without entering edit mode
+    collection().update(props.id, (prevItem) => {
+      prevItem.current_quantity = newQuantity;
+    });
+  };
+
   return (
     <div class="flex justify-between w-full ">
       <div class="flex items-center gap-2">
@@ -47,12 +59,22 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
           when={isQuantityEditing()}
           fallback={
             <>
-              <div>
-                <PenIcon
-                  class="size-4"
-                  on:click={() => setQuantityEditing(true)}
-                />
-              </div>
+              {/* Conditionally show Minus or Pen icon based on quantity */}
+              <Show
+                when={quantity() > 0}
+                fallback={
+                  <div class="hover:bg-accent p-0.5 rounded-md cursor-pointer">
+                    <PenIcon
+                      class="size-4"
+                      on:click={() => setQuantityEditing(true)}
+                    />
+                  </div>
+                }
+              >
+                <div class="hover:bg-accent p-0.5 rounded-md cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90">
+                  <MinusIcon class="size-4" on:click={decreaseQuantity} />
+                </div>
+              </Show>
               <span>{quantity()}</span>/<span>{props.fullQuantity}</span>
             </>
           }
@@ -81,10 +103,12 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
             pattern="[0-9]*"
             min={0}
             value={quantity()}
-            size={quantity().toString().split("").length + 1}
+            size={quantity().toString().length + 1}
             onInput={(e) => {
               const value = Number(e.currentTarget.value);
-              !isNaN(value) && setQuantity(value);
+              if (!isNaN(value)) {
+                setQuantity(value);
+              }
             }}
             class="invalid:border-red-500 invalid:text-red-600"
           />
