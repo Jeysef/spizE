@@ -1,4 +1,5 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal, onCleanup, Show } from "solid-js";
+import { Portal } from "solid-js/web";
 import { ChevronDown, Plus } from "lucide-solid";
 import type {
     CategoryResponse,
@@ -59,60 +60,81 @@ export function NewItemInline(props: NewItemInlineProps) {
         setIsOpen(false);
     };
 
+    createEffect(() => {
+        if (isOpen()) {
+            const original = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            onCleanup(() => {
+                document.body.style.overflow = original;
+            });
+        }
+    });
+
     return (
-        <Collapsible open={isOpen()} onOpenChange={setIsOpen}>
-            {/* Header / Primary Helper Bar */}
-            <div class="p-4 flex items-center gap-2">
-                <Input
-                    placeholder="Název nové položky..."
-                    value={name()}
-                    onInput={(e) => setName(e.currentTarget.value)}
-                    class="flex-1"
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") handleCreate();
-                    }}
+        <>
+            <Portal mount={document.body}>
+                <div
+                    class={cn(
+                        "fixed inset-0 bg-black/50 z-40 transition-opacity duration-300",
+                        isOpen() ? "opacity-100" : "opacity-0 pointer-events-none"
+                    )}
+                    onClick={() => setIsOpen(false)}
                 />
-                <Button onClick={handleCreate} disabled={!name()}>
-                    <Plus class="size-4 mr-2" />
-                    Přidat
-                </Button>
-                <CollapsibleTrigger
-                    class={cn(buttonVariants({ variant: "outline", size: "icon" }))}
-                >
-                    <ChevronDown
-                        class={cn(
-                            "size-4 transition-transform",
-                            isOpen() ? "rotate-0" : "rotate-180"
-                        )}
+            </Portal>
+            <Collapsible open={isOpen()} onOpenChange={setIsOpen} class="bg-background">
+                {/* Header / Primary Helper Bar */}
+                <div class="p-4 flex items-center gap-2">
+                    <Input
+                        placeholder="Název nové položky..."
+                        value={name()}
+                        onInput={(e) => setName(e.currentTarget.value)}
+                        class="flex-1"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") handleCreate();
+                        }}
                     />
-                    <span class="sr-only">Toggle details</span>
-                </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent>
-                <ItemInlineDetail
-                    class="grid gap-4 py-4 border-b p-4"
-                    name={name()}
-                    categoryId={categoryId()}
-                    categories={props.categories}
-                    onCategoryChange={setCategoryId}
+                    <Button onClick={handleCreate} disabled={!name()}>
+                        <Plus class="size-4 mr-2" />
+                        Přidat
+                    </Button>
+                    <CollapsibleTrigger
+                        class={cn(buttonVariants({ variant: "outline", size: "icon" }))}
+                    >
+                        <ChevronDown
+                            class={cn(
+                                "size-4 transition-transform",
+                                isOpen() ? "rotate-0" : "rotate-180"
+                            )}
+                        />
+                        <span class="sr-only">Toggle details</span>
+                    </CollapsibleTrigger>
+                </div>
+                <CollapsibleContent>
+                    <ItemInlineDetail
+                        class="grid gap-4 py-4 border-b p-4"
+                        name={name()}
+                        categoryId={categoryId()}
+                        categories={props.categories}
+                        onCategoryChange={setCategoryId}
 
-                    currentQuantity={currentQuantity()}
-                    onCurrentQuantityInput={setCurrentQuantity}
+                        currentQuantity={currentQuantity()}
+                        onCurrentQuantityInput={setCurrentQuantity}
 
-                    fullQuantity={fullQuantity()}
-                    onFullQuantityInput={setFullQuantity}
+                        fullQuantity={fullQuantity()}
+                        onFullQuantityInput={setFullQuantity}
 
-                    unitId={unitId()}
-                    units={props.units}
-                    onUnitChange={setUnitId}
+                        unitId={unitId()}
+                        units={props.units}
+                        onUnitChange={setUnitId}
 
-                    modifyBy={modifyBy()}
-                    onModifyByChange={setModifyBy}
+                        modifyBy={modifyBy()}
+                        onModifyByChange={setModifyBy}
 
-                    note={note()}
-                    onNoteChange={setNote}
-                />
-            </CollapsibleContent>
-        </Collapsible>
+                        note={note()}
+                        onNoteChange={setNote}
+                    />
+                </CollapsibleContent>
+            </Collapsible>
+        </>
     );
 }
