@@ -54,25 +54,28 @@ export function ItemsPage(props: ItemsPageProps) {
             onInput={(e) => props.setNameFilter(e.currentTarget.value)}
           />
         </div>
-        <Select
-          disabled={props.isLoading}
-          value={props.sortBy}
-          onChange={(value) => value && props.setSortBy(value)}
-          optionValue="value"
-          optionTextValue="label"
-          options={props.sortByOptions}
+        <div class="flex items-center gap-2 justify-end">
+          Řadit podle:
+          <Select
+            disabled={props.isLoading}
+            value={props.sortBy}
+            onChange={(value) => value && props.setSortBy(value)}
+            optionValue="value"
+            optionTextValue="label"
+            options={props.sortByOptions}
 
-          itemComponent={(props) => (
-            <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
-          )}
-        >
-          <SelectTrigger class="w-full sm:w-[180px]">
-            <SelectValue<{ value: string; label: string }>>
-              {(state) => state.selectedOption().label}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent />
-        </Select>
+            itemComponent={(props) => (
+              <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
+            )}
+          >
+            <SelectTrigger class=" flex sm:w-[180px]">
+              <SelectValue<{ value: string; label: string }>>
+                {(state) => state.selectedOption().label}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent />
+          </Select>
+        </div>
       </div>
 
       {/* Items Grid */}
