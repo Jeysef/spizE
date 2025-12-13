@@ -30,6 +30,7 @@ export function ItemsPageVM() {
       label: "Množství"
     },];
   const [nameFilter, setNameFilter] = createSignal("");
+  const [categoryFilter, setCategoryFilter] = createSignal<number[]>([]);
   const [sortBy, setSortBy] =
     createSignal<(typeof sortByOptions)[number]>(sortByOptions[0]);
   // Snapshot of timestamps to keep sort order stable during edits
@@ -126,9 +127,12 @@ export function ItemsPageVM() {
   const filteredAndSortedItems = createMemo(() => {
     const items = itemsQuery.data;
     const snapshot = timestampSnapshot();
-    const filteredItems = items?.filter((item) =>
-      item.name.toLowerCase().includes(nameFilter().toLowerCase())
-    );
+    const currentCategoryFilter = categoryFilter();
+    const filteredItems = items?.filter((item) => {
+      const matchesName = item.name.toLowerCase().includes(nameFilter().toLowerCase());
+      const matchesCategory = currentCategoryFilter.length === 0 || currentCategoryFilter.includes(item.category_id);
+      return matchesName && matchesCategory;
+    });
 
     switch (sortBy().value) {
       case "name":
@@ -175,6 +179,8 @@ export function ItemsPageVM() {
         isLoading={itemsQuery.isLoading()}
         nameFilter={nameFilter()}
         setNameFilter={setNameFilter}
+        categoryFilter={categoryFilter()}
+        setCategoryFilter={setCategoryFilter}
         sortBy={sortBy()}
         setSortBy={setSortBy}
         sortByOptions={sortByOptions}

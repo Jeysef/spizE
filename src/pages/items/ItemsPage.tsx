@@ -24,6 +24,8 @@ interface ItemsPageProps {
   isLoading: boolean;
   nameFilter: string;
   setNameFilter: (value: string) => void;
+  categoryFilter: number[];
+  setCategoryFilter: (value: number[]) => void;
   sortBy: { value: string; label: string };
   sortByOptions: { value: string; label: string }[];
   setSortBy: (value: { value: string; label: string }) => void;
@@ -53,6 +55,36 @@ export function ItemsPage(props: ItemsPageProps) {
             value={props.nameFilter}
             onInput={(e) => props.setNameFilter(e.currentTarget.value)}
           />
+        </div>
+
+        <div class="flex items-center gap-2 justify-end">
+          Kategorie:
+          <Select<CategoryResponse>
+            multiple
+            options={props.categories || []}
+            optionValue="id"
+            optionTextValue="name"
+            value={props.categories?.filter((c) => props.categoryFilter.includes(c.id))}
+            onChange={(v) =>
+              props.setCategoryFilter(v ? v.map((c) => c.id) : [])
+            }
+            placeholder="Všechny"
+            itemComponent={(props) => (
+              <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
+            )}
+          >
+            <SelectTrigger class="w-[180px]">
+              <SelectValue<CategoryResponse>>
+                {(state) => {
+                  const options = state.selectedOptions();
+                  if (options.length === 0 || !options) return "Všechny";
+                  if (options.length === 1) return options[0].name;
+                  return `${options.length} vybráno`;
+                }}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent />
+          </Select>
         </div>
         <div class="flex items-center gap-2 justify-end">
           Řadit podle:
