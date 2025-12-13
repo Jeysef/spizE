@@ -4,10 +4,10 @@ import { ItemsPage } from "~/pages/items/ItemsPage";
 import { useItems } from "~/providers/items/items.hooks";
 
 export function ItemsPageVM() {
-  const sortByOptions = ["missing", "name", "stock"] as const;
+  const sortByOptions = ["missing", "name", "stock", "last_edited"] as const;
   const [nameFilter, setNameFilter] = createSignal("");
   const [sortBy, setSortBy] =
-    createSignal<(typeof sortByOptions)[number]>("missing");
+    createSignal<(typeof sortByOptions)[number]>("last_edited");
 
   const collection = useItems();
   const itemsQuery = useLiveQuery((q) => q.from({ items: collection() }));
@@ -27,6 +27,12 @@ export function ItemsPageVM() {
           (a, b) =>
             a.current_quantity / a.full_quantity -
             b.current_quantity / b.full_quantity
+        );
+        break;
+      case "last_edited":
+        filteredItems.sort((a, b) =>
+          new Date(a.last_edited).getTime() -
+          new Date(b.last_edited).getTime()
         );
         break;
       case "missing":
