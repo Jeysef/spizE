@@ -14,7 +14,7 @@ export function ItemsProvider(props: ParentProps) {
     createItemsCollectionOptions(() => user().id)
   );
 
-  itemsSync(itemsCollection, user().id);
+  itemsSync(itemsCollection, () => user().id);
   return (
     <ItemsContext.Provider value={itemsCollection}>
       {props.children}
