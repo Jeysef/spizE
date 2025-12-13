@@ -96,6 +96,20 @@ export const createItemsCollectionOptions = (
             })
           )
         );
+
+        queryClient.setQueryData(
+          getUserItemsUserUserIdItemAllGetQueryKey({
+            path: { user_id: selectedUserId() },
+          }),
+          (old: ItemResponse[] | undefined) => {
+            if (!old) return old;
+            const updates = new Map(
+              transaction.mutations.map((m) => [m.modified.id, m.modified])
+            );
+            return old.map((item) => updates.get(item.id) || item);
+          }
+        );
+
         return { refetch: false };
       },
       onDelete: async ({ transaction }) => {
@@ -109,6 +123,20 @@ export const createItemsCollectionOptions = (
             })
           )
         );
+
+        queryClient.setQueryData(
+          getUserItemsUserUserIdItemAllGetQueryKey({
+            path: { user_id: selectedUserId() },
+          }),
+          (old: ItemResponse[] | undefined) => {
+            if (!old) return old;
+            const idsToDelete = new Set(
+              transaction.mutations.map((m) => m.modified.id)
+            );
+            return old.filter((item) => !idsToDelete.has(item.id));
+          }
+        );
+
         return { refetch: false };
       },
       onInsert: async ({ transaction }) => {
@@ -123,7 +151,6 @@ export const createItemsCollectionOptions = (
             })
           )
         );
-        return { refetch: false };
       },
       // onInsert: async ({ transaction }) => {
       //   await Promise.all(
