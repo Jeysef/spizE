@@ -30,7 +30,7 @@ export default function Home(props: HomeProps) {
   return (
     <section class="p-8 gap-4 flex flex-col justify-center items-center">
       <Heading variant={"h1"} class="text-2xl font-bold">
-        Missing & Low Stock
+        Chybějící & Docházející položky
       </Heading>
       <div class=" gap-4 flex flex-row flex-wrap justify-center items-center">
         {/* <Card class="basis-80 shrink">

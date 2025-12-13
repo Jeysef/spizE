@@ -62,7 +62,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
             {/* Name Field - Optional if we want to show it here */}
             <Show when={props.onNameChange || props.onNameInput}>
                 <div class="grid gap-2">
-                    <Label>Name</Label>
+                    <Label>Jméno</Label>
                     <Input
                         value={props.name}
                         onBlur={(e) => props.onNameChange?.(e.target.value)}
@@ -73,7 +73,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
 
             {/* Category Field */}
             <div class="grid gap-2">
-                <Label>Category</Label>
+                <Label>Kategorie</Label>
                 <Select
                     value={props.categories?.find((c) => c.id === props.categoryId)}
                     onChange={(value) => value && props.onCategoryChange(value.id)}
@@ -98,7 +98,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
             <div class="grid gap-4">
                 <div class="grid grid-cols-[1fr_auto] gap-2 items-end">
                     <div class="grid gap-2">
-                        <Label>Current Quantity</Label>
+                        <Label>Aktuální množství</Label>
                         <Input
                             type="number"
                             min={0}
@@ -141,7 +141,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
 
                 <div class="grid grid-cols-[1fr_auto] gap-2 items-end">
                     <div class="grid gap-2">
-                        <Label>Target Quantity</Label>
+                        <Label>Cílové množství</Label>
                         <Input
                             type="number"
                             min={1}
@@ -187,7 +187,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
             <div class="grid grid-cols-2 gap-4">
                 {/* Unit Field */}
                 <div class="grid gap-2">
-                    <Label>Unit</Label>
+                    <Label>Jednotka</Label>
                     <Select
                         value={props.units?.find((u) => u.id === props.unitId)}
                         onChange={(value) => value && props.onUnitChange(value.id)}
@@ -211,7 +211,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                 {/* Modify By Field */}
                 <Show when={props.onModifyByChange}>
                     <div class="grid gap-2">
-                        <Label>Modified By</Label>
+                        <Label>Modifikace o</Label>
                         <Input
                             type="number"
                             min={1}
@@ -242,12 +242,12 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
 
             {/* Note */}
             <div class="grid gap-2">
-                <Label>Note</Label>
+                <Label>Poznámka</Label>
                 <TextField value={props.note || ""} onChange={props.onNoteChange}>
                     <TextFieldTextArea
                         autoResize
                         class="min-h-[60px]"
-                        placeholder="Add a note..."
+                        placeholder="Poznámka..."
                     />
                 </TextField>
             </div>
@@ -256,7 +256,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
             <Show when={props.showProgress}>
                 <div class="space-y-2 pt-2">
                     <div class="flex justify-between text-sm">
-                        <Label>Stock Level</Label>
+                        <Label>Stav</Label>
                         <span class="text-muted-foreground">
                             {props.currentQuantity} / {props.fullQuantity}
                         </span>
@@ -268,7 +268,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
             {/* Delete Button */}
             <Show when={props.onDelete}>
                 <Button variant="destructive" onClick={props.onDelete}>
-                    Delete
+                    Vymazat
                 </Button>
             </Show>
         </div>

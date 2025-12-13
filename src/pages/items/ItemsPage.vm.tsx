@@ -11,12 +11,27 @@ import { merge } from "~/lib/utils";
 import { ItemsPage } from "~/pages/items/ItemsPage";
 import { useItems } from "~/providers/items/items.hooks";
 import { NewItemInline } from "./NewItemInline";
+import { Portal } from "solid-js/web";
 
 export function ItemsPageVM() {
-  const sortByOptions = ["missing", "name", "stock", "last_edited"] as const;
+  // const sortByOptions = ["missing", "name", "stock", "last_edited"] as const;
+  const sortByOptions = [
+    {
+      value: "last_edited",
+      label: "Naposledy upraveno"
+    }, {
+      value: "missing",
+      label: "Chybějící"
+    }, {
+      value: "name",
+      label: "Název"
+    }, {
+      value: "stock",
+      label: "Množství"
+    },];
   const [nameFilter, setNameFilter] = createSignal("");
   const [sortBy, setSortBy] =
-    createSignal<(typeof sortByOptions)[number]>("last_edited");
+    createSignal<(typeof sortByOptions)[number]>(sortByOptions[0]);
   // Snapshot of timestamps to keep sort order stable during edits
   const [timestampSnapshot, setTimestampSnapshot] = createSignal<
     Record<number, string>
@@ -33,9 +48,8 @@ export function ItemsPageVM() {
   // Maintain stable sort order for "last_edited"
   createEffect(() => {
     const items = itemsQuery.data;
-    const currentSort = sortBy();
 
-    if (currentSort !== "last_edited") {
+    if (sortBy().value !== "last_edited") {
       setTimestampSnapshot({});
       return;
     }
@@ -116,7 +130,7 @@ export function ItemsPageVM() {
       item.name.toLowerCase().includes(nameFilter().toLowerCase())
     );
 
-    switch (sortBy()) {
+    switch (sortBy().value) {
       case "name":
         filteredItems?.sort((a, b) => a.name.localeCompare(b.name));
         break;
@@ -167,12 +181,14 @@ export function ItemsPageVM() {
         onUpdateItem={handleUpdateItem}
         onDeleteItem={handleDeleteItem}
       />
-      <NewItemInline
-        categories={categoriesQuery.data}
-        units={unitsQuery.data}
-        users={usersQuery.data}
-        onCreate={handleCreateItem}
-      />
+      <Portal mount={document.querySelector("#bottom-navigation-top")!}>
+        <NewItemInline
+          categories={categoriesQuery.data}
+          units={unitsQuery.data}
+          users={usersQuery.data}
+          onCreate={handleCreateItem}
+        />
+      </Portal>
     </>
   );
 }

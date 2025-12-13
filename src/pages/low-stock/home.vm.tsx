@@ -20,17 +20,17 @@ export default function HomeViewModel() {
 
   const cards = () => [
     {
-      title: "Missing",
-      description: `${missingItems().length} items need to be added`,
+      title: "Chybějící",
+      description: `${missingItems().length} chybí`,
       items: missingItems(),
-      emptyMsg: "No items missing",
+      emptyMsg: "Žádné položky chybí",
       color: "text-destructive",
     },
     {
-      title: "Low Stock",
-      description: `${lowStockItems().length} items are low in stock`,
+      title: "Docházející",
+      description: `${lowStockItems().length} docházejí`,
       items: lowStockItems(),
-      emptyMsg: "No items low in stock",
+      emptyMsg: "Žádné položky docházejí",
       color: "text-orange-500",
     },
   ];

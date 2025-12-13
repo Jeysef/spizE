@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 import { ChevronDown } from "lucide-solid";
 import ChevronRight from "lucide-solid/icons/chevron-right";
 import Minus from "lucide-solid/icons/minus";
-import { For, Show } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import type {
   CategoryResponse,
   ItemResponse,
@@ -43,49 +43,101 @@ interface ItemCardProps {
   allUsers: UserResponse[] | undefined;
   onUpdate: (id: number, changes: Partial<ItemResponse>) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
+  opened: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 // Reusable component for displaying a single item in the list
 export function ItemCard(props: ItemCardProps) {
+  const [isEditingName, setIsEditingName] = createSignal(false);
+  const [editNameValue, setEditNameValue] = createSignal("");
+
   const progress = () => {
     if (props.item.full_quantity === 0) return 100; // Fully stocked if target is 0
     return (props.item.current_quantity / props.item.full_quantity) * 100;
   };
 
   return (
-    <Collapsible>
+    <Collapsible open={props.opened} onOpenChange={props.onOpenChange}>
       <Card class="flex flex-col justify-between transition-shadow hover:shadow-md">
-        <CollapsibleTrigger class="w-full text-left">
-          <CardHeader class="flex flex-row items-center justify-between space-y-0 p-4 pl-6">
-            <CardTitle class="text-lg font-semibold">
-              {props.item.name}
-            </CardTitle>
-            <div class="flex items-center gap-2">
-              <span class="text-muted-foreground">
-                {`${props.item.current_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name} / ${props.item.full_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}`}
-              </span>
+        <CardHeader class="flex flex-row items-center justify-between space-y-0 p-4 pl-6">
+
+          <CardTitle class="text-2xl font-semibold flex items-center min-h-[40px]">
+            <Show
+              when={isEditingName()}
+              fallback={
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setEditNameValue(props.item.name);
+                    setIsEditingName(true);
+                  }}
+                  class="cursor-pointer hover:underline hover:decoration-dashed decoration-muted-foreground/50 underline-offset-4"
+                >
+                  {props.item.name}
+                </span>
+              }
+            >
+              <Input
+                value={editNameValue()}
+                onInput={(e) => setEditNameValue(e.currentTarget.value)}
+                onBlur={() => {
+                  if (editNameValue().trim() !== props.item.name) {
+                    props.onUpdate(props.item.id, { name: editNameValue() });
+                  }
+                  setIsEditingName(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (editNameValue().trim() !== props.item.name) {
+                      props.onUpdate(props.item.id, { name: editNameValue() });
+                    }
+                    setIsEditingName(false);
+                  }
+                  if (e.key === "Escape") {
+                    setIsEditingName(false);
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()}
+                class="h-9 text-xl font-semibold px-2 py-0 w-full max-w-[300px]"
+                ref={(el) => setTimeout(() => el.focus(), 0)}
+              />
+            </Show>
+          </CardTitle>
+          <div class="flex items-center gap-4">
+            <span class="text-muted-foreground">
+              {`${props.item.current_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name} / ${props.item.full_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}`}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-8 shrink-0 w-auto p-2 "
+              disabled={props.item.current_quantity <= 0}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.onUpdate(props.item.id, {
+                  current_quantity: Math.max(
+                    0,
+                    props.item.current_quantity - (props.item.modify_by ?? 1)
+                  ),
+                });
+              }}
+            >
+              - {props.item.modify_by ?? 1}
+              <span class="sr-only">Odebrat 1</span>
+            </Button>
+            <CollapsibleTrigger class="contents">
               <Button
                 variant="outline"
                 size="icon"
                 class="size-8 shrink-0"
-                disabled={props.item.current_quantity <= 0}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  props.onUpdate(props.item.id, {
-                    current_quantity: Math.max(
-                      0,
-                      props.item.current_quantity - (props.item.modify_by ?? 1)
-                    ),
-                  });
-                }}
               >
-                <Minus class="size-4" />
-                <span class="sr-only">Subtract one</span>
+                <ChevronDown class="size-4 transition-transform ui-expanded:rotate-90" />
               </Button>
-              <ChevronDown class="size-4 transition-transform ui-expanded:rotate-90" />
-            </div>
-          </CardHeader>
-        </CollapsibleTrigger>
+            </CollapsibleTrigger>
+          </div>
+        </CardHeader>
         <CollapsibleContent>
           <ItemInlineDetail
             class="grid gap-4 py-4 p-4"
@@ -122,7 +174,7 @@ export function ItemCard(props: ItemCardProps) {
             note={props.item.note}
             onNoteChange={(val) => props.onUpdate(props.item.id, { note: val })}
             // Extras
-            showProgress
+            // showProgress
             onDelete={() => props.onDelete(props.item.id)}
           />
         </CollapsibleContent>

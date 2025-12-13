@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js";
 import { For, Show } from "solid-js";
 import type {
   CategoryResponse,
@@ -23,21 +24,24 @@ interface ItemsPageProps {
   isLoading: boolean;
   nameFilter: string;
   setNameFilter: (value: string) => void;
-  sortBy: string;
-  sortByOptions: readonly string[];
-  setSortBy: (value: string) => void;
+  sortBy: { value: string; label: string };
+  sortByOptions: { value: string; label: string }[];
+  setSortBy: (value: { value: string; label: string }) => void;
   onUpdateItem: (id: number, changes: Partial<ItemResponse>) => Promise<void>;
   onDeleteItem: (id: number) => Promise<void>;
 }
 // The main component for the Items page
 export function ItemsPage(props: ItemsPageProps) {
+
+  const [opened, setOpened] = createSignal(-1);
+
   return (
     <main class="container mx-auto px-4 py-8 pb-32">
       <div class="mb-8">
-        <h1 class="text-4xl font-bold tracking-tight">Pantry Items</h1>
-        <p class="text-muted-foreground">
+        <h1 class="text-4xl font-bold tracking-tight">Položky</h1>
+        {/* <p class="text-muted-foreground">
           Browse and manage all items in your pantry.
-        </p>
+        </p> */}
       </div>
 
       {/* Filter and Sort Controls */}
@@ -45,7 +49,7 @@ export function ItemsPage(props: ItemsPageProps) {
         <div class="grow">
           <Input
             disabled={props.isLoading}
-            placeholder="Filter items by name..."
+            placeholder="Filtrovat podle jména..."
             value={props.nameFilter}
             onInput={(e) => props.setNameFilter(e.currentTarget.value)}
           />
@@ -54,14 +58,17 @@ export function ItemsPage(props: ItemsPageProps) {
           disabled={props.isLoading}
           value={props.sortBy}
           onChange={(value) => value && props.setSortBy(value)}
-          options={props.sortByOptions as string[]}
+          optionValue="value"
+          optionTextValue="label"
+          options={props.sortByOptions}
+
           itemComponent={(props) => (
-            <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+            <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
           )}
         >
           <SelectTrigger class="w-full sm:w-[180px]">
-            <SelectValue<string>>
-              {(state) => state.selectedOption()}
+            <SelectValue<{ value: string; label: string }>>
+              {(state) => state.selectedOption().label}
             </SelectValue>
           </SelectTrigger>
           <SelectContent />
@@ -73,8 +80,8 @@ export function ItemsPage(props: ItemsPageProps) {
         <For
           each={props.items}
           fallback={
-            <Show when={props.isLoading} fallback={<p>No items found.</p>}>
-              <p>Loading...</p>
+            <Show when={props.isLoading} fallback={<p>Žádné položky nenalezeny.</p>}>
+              <p>Načítání...</p>
             </Show>
           }
         >
@@ -86,6 +93,14 @@ export function ItemsPage(props: ItemsPageProps) {
               allUsers={props.users}
               onUpdate={props.onUpdateItem}
               onDelete={props.onDeleteItem}
+              opened={opened() === item.id}
+              onOpenChange={(open) => {
+                if (!open) {
+                  setOpened(-1);
+                } else {
+                  setOpened(item.id);
+                }
+              }}
             />
           )}
         </For>
