@@ -38,7 +38,7 @@ export function ItemsPage(props: ItemsPageProps) {
   return (
     <main class="container mx-auto px-4 py-8 pb-32">
       <div class="mb-8">
-        <h1 class="text-4xl font-bold tracking-tight">Položky</h1>
+        <h1 class="text-4xl font-extrabold tracking-tight text-primary">Položky</h1>
         {/* <p class="text-muted-foreground">
           Browse and manage all items in your pantry.
         </p> */}

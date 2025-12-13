@@ -59,10 +59,10 @@ export function ItemCard(props: ItemCardProps) {
 
   return (
     <Collapsible open={props.opened} onOpenChange={props.onOpenChange}>
-      <Card class="flex flex-col justify-between transition-shadow hover:shadow-md">
+      <Card class="flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-md hover:border-primary/20 bg-card border-transparent">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 p-4 pl-6">
 
-          <CardTitle class="text-2xl font-semibold flex items-center min-h-[40px]">
+          <CardTitle class="text-xl font-bold flex items-center min-h-[40px] tracking-tight">
             <Show
               when={isEditingName()}
               fallback={
@@ -110,9 +110,9 @@ export function ItemCard(props: ItemCardProps) {
               {`${props.item.current_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name} / ${props.item.full_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}`}
             </span>
             <Button
-              variant="outline"
-              size="icon"
-              class="size-8 shrink-0 w-auto p-2 "
+              variant="secondary"
+              size="sm"
+              class="h-9 min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
               disabled={props.item.current_quantity <= 0}
               onClick={(e) => {
                 e.stopPropagation();
@@ -129,9 +129,9 @@ export function ItemCard(props: ItemCardProps) {
             </Button>
             <CollapsibleTrigger class="contents">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                class="size-8 shrink-0"
+                class="size-9 shrink-0 rounded-full hover:bg-muted text-muted-foreground"
               >
                 <ChevronDown class="size-4 transition-transform ui-expanded:rotate-90" />
               </Button>
