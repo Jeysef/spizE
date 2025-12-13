@@ -1,5 +1,10 @@
 import { For, Show } from "solid-js";
-import type { ItemResponse } from "~/client";
+import type {
+  CategoryResponse,
+  ItemResponse,
+  UnitResponse,
+  UserResponse,
+} from "~/client";
 import { Input } from "~/components/ui/input";
 import {
   Select,
@@ -12,17 +17,22 @@ import { ItemCard } from "~/pages/items/ItemCard";
 
 interface ItemsPageProps {
   items: ItemResponse[];
+  categories: CategoryResponse[] | undefined;
+  units: UnitResponse[] | undefined;
+  users: UserResponse[] | undefined;
   isLoading: boolean;
   nameFilter: string;
   setNameFilter: (value: string) => void;
   sortBy: string;
   sortByOptions: readonly string[];
   setSortBy: (value: string) => void;
+  onUpdateItem: (id: number, changes: Partial<ItemResponse>) => Promise<void>;
+  onDeleteItem: (id: number) => Promise<void>;
 }
 // The main component for the Items page
 export function ItemsPage(props: ItemsPageProps) {
   return (
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 pb-32">
       <div class="mb-8">
         <h1 class="text-4xl font-bold tracking-tight">Pantry Items</h1>
         <p class="text-muted-foreground">
@@ -68,7 +78,16 @@ export function ItemsPage(props: ItemsPageProps) {
             </Show>
           }
         >
-          {(item) => <ItemCard item={item} />}
+          {(item) => (
+            <ItemCard
+              item={item}
+              allCategories={props.categories}
+              allUnits={props.units}
+              allUsers={props.users}
+              onUpdate={props.onUpdateItem}
+              onDelete={props.onDeleteItem}
+            />
+          )}
         </For>
       </div>
     </main>

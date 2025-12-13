@@ -12,6 +12,7 @@ export const routeNames = {
   "/item/:id": "Add Item",
   "/items/add": "Add Item",
   "/shopping": "Shopping",
+  "/low-stock": "Low Stock",
 } as const;
 
 export type RoutePath = keyof typeof routeNames;
@@ -33,6 +34,10 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   {
     path: "/items/add",
     component: lazy(() => import("./pages/item/new")),
+  },
+  {
+    path: "/low-stock",
+    component: lazy(() => import("./pages/low-stock/home.vm")),
   },
   {
     path: "/item/:id",

@@ -6,12 +6,13 @@ import { SiteHeader } from "~/components/header/SiteHeader";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { ItemsProvider } from "~/providers/items/items.provider";
 import { UserProvider } from "~/providers/user/user.provider";
+import { Toaster } from "./components/ui/sonner";
 
 const InnerApp: ParentComponent = (props) => {
   return (
     <>
       <SiteHeader />
-      <div class="flex flex-col w-full justify-between ">
+      <div class="flex flex-col w-full justify-between pb-20">
         <Suspense>{props.children}</Suspense>
         <BottomNavigation />
       </div>
@@ -39,6 +40,7 @@ const App: ParentComponent = (props) => {
             <SidebarInset class="overflow-clip">
               <InnerApp>{props.children}</InnerApp>
             </SidebarInset>
+            <Toaster position="top-right" />
           </SidebarProvider>
         </ItemsProvider>
       </UserProvider>

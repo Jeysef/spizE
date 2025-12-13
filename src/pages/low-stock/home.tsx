@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
 import { For, Show } from "solid-js";
 import type { ItemResponse } from "~/client";
-import { PantryItem } from "~/pages/home/PantryItem";
+import { PantryItem } from "~/pages/low-stock/PantryItem";
 import Heading from "~/components/typography/heading";
 import { buttonVariants } from "~/components/ui/button";
 import {
@@ -28,12 +28,12 @@ interface HomeProps {
 
 export default function Home(props: HomeProps) {
   return (
-    <section class="p-8 gap-4 flex flex-col">
+    <section class="p-8 gap-4 flex flex-col justify-center items-center">
       <Heading variant={"h1"} class="text-2xl font-bold">
-        Dashboard
+        Missing & Low Stock
       </Heading>
-      <div class=" gap-4 flex flex-row flex-wrap">
-        <Card class="basis-80 shrink">
+      <div class=" gap-4 flex flex-row flex-wrap justify-center items-center">
+        {/* <Card class="basis-80 shrink">
           <CardHeader>
             <CardTitle>Add Items</CardTitle>
             <CardDescription>Add new items to your pantry</CardDescription>
@@ -52,7 +52,7 @@ export default function Home(props: HomeProps) {
               Shopping
             </A>
           </CardContent>
-        </Card>
+        </Card> */}
         <For each={props.cards}>
           {(items) => (
             <Card class="basis-80 shrink">

@@ -13,11 +13,14 @@ import {
   type ItemResponse,
   type UserResponse,
   updateItemUserUserIdItemItemIdPatch,
+  getUnitsUnitAllGet,
+  type UnitResponse,
 } from "~/client";
 import {
   getCategoriesCategoryAllGetQueryKey,
   getUserItemsUserUserIdItemAllGetQueryKey,
   getUsersUserAllGetQueryKey,
+  getUnitsUnitAllGetQueryKey,
 } from "~/client/@tanstack/solid-query.gen";
 
 const queryClient = new QueryClient();
@@ -87,6 +90,8 @@ export const createItemsCollectionOptions = (
                 category_id: mutation.changes.category_id,
                 note: mutation.changes.note,
                 name: mutation.changes.name,
+                unit_id: mutation.changes.unit_id,
+                modify_by: mutation.changes.modify_by,
               },
             })
           )
@@ -145,6 +150,23 @@ export const categoriesCollection = createCollection(
     },
     queryClient,
     getKey: (item: CategoryResponse) => item.id,
-    refetchInterval: 50000, // 50 second
+    // refetchInterval: 50000, // 50 second
+  })
+);
+
+export const unitsCollection = createCollection(
+  queryCollectionOptions({
+    queryKey: getUnitsUnitAllGetQueryKey(),
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getUnitsUnitAllGet({
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryClient,
+    getKey: (item: UnitResponse) => item.id,
+    // refetchInterval: 50000,
   })
 );
