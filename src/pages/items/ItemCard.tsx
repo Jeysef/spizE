@@ -106,7 +106,7 @@ export function ItemCard(props: ItemCardProps) {
             </Show>
           </CardTitle>
           <div class="flex items-center gap-4">
-            <span class="text-muted-foreground">
+            <span class="text-muted-foreground text-right">
               {`${props.item.current_quantity} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}`} <span class="whitespace-nowrap">/ {props.item.full_quantity} {props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}</span>
             </span>
             <Button
