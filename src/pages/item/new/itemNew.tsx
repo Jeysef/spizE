@@ -43,7 +43,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
         href="/"
         class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center"
       >
-        <ChevronLeft class="size-5" /> Back to Dashboard
+        <ChevronLeft class="size-5" /> Zpět na přehled
       </A>
 
       <form
@@ -56,10 +56,10 @@ export default function ItemNewPage(props: ItemNewPageProps) {
         <Card>
           <CardHeader>
             <CardTitle class="text-3xl font-bold tracking-tight">
-              Add new pantry item
+              Přidat novou položku
             </CardTitle>
             <CardDescription>
-              View and edit the details of this pantry item.
+              Zadejte podrobnosti o nové položce.
             </CardDescription>
           </CardHeader>
           <CardContent class="grid gap-6">
@@ -69,7 +69,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
               validators={{
                 onChange: z
                   .string()
-                  .min(2, "Item name must be at least 2 characters long."),
+                  .min(2, "Název položky musí mít alespoň 2 znaky."),
               }}
               children={(field) => <field.ItemName />}
             />
@@ -80,10 +80,10 @@ export default function ItemNewPage(props: ItemNewPageProps) {
               <form.AppField
                 name="current_quantity"
                 validators={{
-                  onChange: z.number().min(0, "Quantity cannot be negative."),
+                  onChange: z.number().min(0, "Množství nemůže být záporné."),
                 }}
                 children={(field) => (
-                  <field.ItemCount name="Current quantity" />
+                  <field.ItemCount name="Aktuální množství" />
                 )}
               />
 
@@ -93,9 +93,9 @@ export default function ItemNewPage(props: ItemNewPageProps) {
                 validators={{
                   onChange: z
                     .number()
-                    .min(1, "Target quantity must be greater than 0."),
+                    .min(1, "Cílové množství musí být větší než 0."),
                 }}
-                children={(field) => <field.ItemCount name="Full quantity" />}
+                children={(field) => <field.ItemCount name="Cílové množství" />}
               />
             </div>
 
@@ -103,7 +103,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
             <form.AppField
               name="category_id"
               validators={{
-                onChange: z.number().min(1, "Category ID must be at least 1."),
+                onChange: z.number().min(1, "Vyberte prosím kategorii."),
                 // .max(
                 //   props.categories.length,
                 //   "Category ID must be less than the number of categories."
@@ -133,7 +133,7 @@ export default function ItemNewPage(props: ItemNewPageProps) {
           </CardContent>
           <CardFooter class="flex justify-end gap-2">
             <form.AppForm>
-              <form.Buttons handleDelete={() => {}} />
+              <form.Buttons handleDelete={() => { }} />
             </form.AppForm>
           </CardFooter>
         </Card>
