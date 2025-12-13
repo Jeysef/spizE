@@ -14,9 +14,9 @@ export const BottomNavigation = () => {
   const location = useLocation();
 
   return (
-    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/80 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-4 pt-2">
-      <div id="bottom-navigation-top" />
-      <nav class="flex items-center justify-around px-2">
+    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/80 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-4">
+      <div id="bottom-navigation-top" class="overflow-hidden" />
+      <nav class="flex items-center justify-around px-2 pt-2 bg-background">
         <For each={links}>
           {(link) => {
             const isActive = () =>

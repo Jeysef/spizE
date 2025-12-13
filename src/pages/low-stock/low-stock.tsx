@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Empty, EmptyContent, EmptyTitle } from "~/components/ui/empty";
+import { cn } from "~/lib/utils";
 
 interface CardProps {
   title: string;
@@ -28,56 +29,37 @@ interface HomeProps {
 
 export default function Home(props: HomeProps) {
   return (
-    <section class="p-8 gap-4 flex flex-col justify-center items-center">
-      <Heading variant={"h1"} class="text-2xl font-bold">
+    <section class="p-4 sm:p-8 gap-6 flex flex-col justify-center items-center pb-32">
+      <Heading variant={"h1"} class="text-3xl font-extrabold text-primary tracking-tight">
         Chybějící & Docházející položky
       </Heading>
-      <div class=" gap-4 flex flex-row flex-wrap justify-center items-center">
-        {/* <Card class="basis-80 shrink">
-          <CardHeader>
-            <CardTitle>Add Items</CardTitle>
-            <CardDescription>Add new items to your pantry</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <A href="/items/add" class={buttonVariants()}>
-              Add Item
-            </A>
-          </CardContent>
-          <CardHeader>
-            <CardTitle>Want to know what to buy?</CardTitle>
-            <CardDescription>Go to the shopping page</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <A href="/shopping" class={buttonVariants()}>
-              Shopping
-            </A>
-          </CardContent>
-        </Card> */}
+      <div class="w-full max-w-5xl gap-6 flex flex-col md:flex-row items-stretch justify-center">
         <For each={props.cards}>
           {(items) => (
-            <Card class="basis-80 shrink">
+            <Card class="flex-1 transition-all duration-300 shadow-sm hover:shadow-md hover:border-primary/20 bg-card border-transparent">
               <CardHeader>
-                <CardTitle class={items.color}>{items.title}</CardTitle>
+                <CardTitle class={cn("text-xl font-bold tracking-tight", items.color)}>{items.title}</CardTitle>
                 <CardDescription>{items.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Show when={!props.loding} fallback={<p>Loading...</p>}>
-                  <ul class="divide-y divide-gray-200">
+                <Show when={!props.loding} fallback={<p class="text-muted-foreground">Načítání...</p>}>
+                  <ul class="flex flex-col gap-2">
                     <For
                       each={items.items}
                       fallback={
                         <Empty>
                           <EmptyContent>
-                            <EmptyTitle>{items.emptyMsg}</EmptyTitle>
+                            <EmptyTitle class="text-muted-foreground font-medium">{items.emptyMsg}</EmptyTitle>
                           </EmptyContent>
                         </Empty>
                       }
                     >
                       {(item) => (
-                        <li class="flex items-center justify-between py-4 space-x-4">
+                        <li class="group flex items-center justify-between py-3 px-2 rounded-lg hover:bg-muted/50 transition-colors">
                           <PantryItem
                             name={item.name}
                             quantity={item.current_quantity}
+                            modify_by={item.modify_by}
                             fullQuantity={item.full_quantity}
                             id={item.id}
                           />

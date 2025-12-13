@@ -1,6 +1,6 @@
 import { useLiveQuery } from "@tanstack/solid-db";
 import { createMemo } from "solid-js";
-import Home from "~/pages/low-stock/home";
+import Home from "~/pages/low-stock/low-stock";
 import { useItems } from "~/providers/items/items.hooks";
 
 export default function HomeViewModel() {

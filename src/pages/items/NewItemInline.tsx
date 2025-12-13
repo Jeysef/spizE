@@ -62,7 +62,7 @@ export function NewItemInline(props: NewItemInlineProps) {
     return (
         <Collapsible open={isOpen()} onOpenChange={setIsOpen}>
             {/* Header / Primary Helper Bar */}
-            <div class="p-4 flex items-center gap-2 bg-card">
+            <div class="p-4 flex items-center gap-2">
                 <Input
                     placeholder="Název nové položky..."
                     value={name()}

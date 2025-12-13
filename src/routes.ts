@@ -37,7 +37,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/low-stock",
-    component: lazy(() => import("./pages/low-stock/home.vm")),
+    component: lazy(() => import("./pages/low-stock/low-stock.vm")),
   },
   {
     path: "/item/:id",
