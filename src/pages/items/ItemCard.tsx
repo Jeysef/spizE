@@ -124,7 +124,7 @@ export function ItemCard(props: ItemCardProps) {
                 });
               }}
             >
-              - {props.item.modify_by ?? 1}
+              {`- ${props.item.modify_by ?? 1} ${props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}`}
               <span class="sr-only">Odebrat 1</span>
             </Button>
             <CollapsibleTrigger class="contents">

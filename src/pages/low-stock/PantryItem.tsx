@@ -17,6 +17,7 @@ interface PantryItemProps {
   quantity: number;
   modify_by: number;
   fullQuantity: number;
+  unit_name: string;
 }
 
 export const PantryItem: Component<PantryItemProps> = (props) => {
@@ -81,7 +82,7 @@ export const PantryItem: Component<PantryItemProps> = (props) => {
                   class="h-8 min-w-8 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
                   onClick={decreaseQuantity}
                 >
-                  - {props.modify_by ?? 1}
+                  {`- ${props.modify_by ?? 1} ${props.unit_name}`}
                   <span class="sr-only">Odebrat 1</span>
                 </Button>
               </Show>

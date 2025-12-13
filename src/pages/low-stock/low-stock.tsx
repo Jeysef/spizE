@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 import { For, Show } from "solid-js";
-import type { ItemResponse } from "~/client";
+import type { ItemResponse, UnitResponse } from "~/client";
 import { PantryItem } from "~/pages/low-stock/PantryItem";
 import Heading from "~/components/typography/heading";
 import { buttonVariants } from "~/components/ui/button";
@@ -25,6 +25,7 @@ interface CardProps {
 interface HomeProps {
   cards: CardProps[];
   loding: boolean;
+  allUnits: UnitResponse[];
 }
 
 export default function Home(props: HomeProps) {
@@ -62,6 +63,7 @@ export default function Home(props: HomeProps) {
                             modify_by={item.modify_by}
                             fullQuantity={item.full_quantity}
                             id={item.id}
+                            unit_name={props.allUnits?.find((unit) => unit.id === item.unit_id)?.name ?? ""}
                           />
                         </li>
                       )}

@@ -1,5 +1,6 @@
 import { useLiveQuery } from "@tanstack/solid-db";
 import { createMemo } from "solid-js";
+import { unitsCollection } from "~/db/collections";
 import Home from "~/pages/low-stock/low-stock";
 import { useItems } from "~/providers/items/items.hooks";
 
@@ -18,6 +19,11 @@ export default function HomeViewModel() {
     )
   );
 
+  const unitsQuery = useLiveQuery((q) => q.from({ units: unitsCollection }));
+
+  const units = () => unitsQuery.data;
+
+
   const cards = () => [
     {
       title: "Chybějící",
@@ -35,5 +41,5 @@ export default function HomeViewModel() {
     },
   ];
 
-  return <Home cards={cards()} loding={itemsQuery.isLoading()} />;
+  return <Home cards={cards()} loding={itemsQuery.isLoading()} allUnits={units()} />;
 }
