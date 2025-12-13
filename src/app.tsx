@@ -7,11 +7,25 @@ import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { ItemsProvider } from "~/providers/items/items.provider";
 import { UserProvider } from "~/providers/user/user.provider";
 
+const InnerApp: ParentComponent = (props) => {
+  return (
+    <>
+      <SiteHeader />
+      <div class="flex flex-col w-full justify-between ">
+        <Suspense>{props.children}</Suspense>
+        <BottomNavigation />
+      </div>
+    </>
+  );
+};
+
+
+
 const App: ParentComponent = (props) => {
   const queryClient = new QueryClient();
   return (
-    <UserProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
         <ItemsProvider>
           <SidebarProvider
             style={
@@ -23,16 +37,12 @@ const App: ParentComponent = (props) => {
           >
             <AppSidebar />
             <SidebarInset class="overflow-clip">
-              <SiteHeader />
-              <div class="flex flex-col w-full justify-between ">
-                <Suspense>{props.children}</Suspense>
-                <BottomNavigation />
-              </div>
+              <InnerApp>{props.children}</InnerApp>
             </SidebarInset>
           </SidebarProvider>
         </ItemsProvider>
-      </QueryClientProvider>
-    </UserProvider>
+      </UserProvider>
+    </QueryClientProvider>
   );
 };
 

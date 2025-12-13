@@ -2,7 +2,8 @@ import type { RouteDefinition } from "@solidjs/router";
 import { lazy } from "solid-js";
 import ItemData from "~/pages/item.data";
 import AboutData from "./pages/about.data";
-import Home from "./pages/home/home.vm";
+// import Home from "./pages/home/home.vm";
+import ItemsPage from "./pages/items";
 
 export const routeNames = {
   "/": "Dashboard",
@@ -18,7 +19,7 @@ export type RoutePath = keyof typeof routeNames;
 export const routes: RouteDefinition<RoutePath | "**">[] = [
   {
     path: "/",
-    component: Home,
+    component: ItemsPage,
   },
   {
     path: "/about",

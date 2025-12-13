@@ -12,7 +12,7 @@ export function SiteHeader() {
           orientation="vertical"
           class="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 class="text-base font-medium">{useLocation().pathname}</h1>
+        <h1 class="text-2xl font-bold font-serif italic">Spiz-E</h1>
         <div class="ml-auto flex items-center gap-2">
           <UserDropdown />
         </div>

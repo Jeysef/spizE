@@ -62,7 +62,7 @@ export const zItemResponse = z.object({
     current_quantity: z.int().gte(0),
     note: z.string(),
     modify_by: z.int(),
-    last_edited: z.iso.datetime()
+    last_edited: z.iso.datetime({ local: true })
 });
 
 /**

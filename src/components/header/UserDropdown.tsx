@@ -22,7 +22,8 @@ function UserDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger class="flex items-center gap-2">
+        <span>{currentUser().name}</span>
         <Avatar class="bg-accent">
           <UserIcon class="aspect-square size-full p-2" />
           <span class="sr-only">Open user menu</span>
