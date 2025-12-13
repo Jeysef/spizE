@@ -28,6 +28,9 @@ export default function ItemNewPage(props: ItemNewPageProps) {
       full_quantity: 1,
       category_id: -1,
       note: "",
+      unit_id: -1,
+      // modify_by: 1,
+      // last_edited: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
       await props.onSubmit?.(value);

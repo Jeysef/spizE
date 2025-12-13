@@ -3,7 +3,6 @@ import { For, Show } from "solid-js";
 import type { ItemResponse, UnitResponse } from "~/client";
 import { PantryItem } from "~/pages/low-stock/PantryItem";
 import Heading from "~/components/typography/heading";
-import { buttonVariants } from "~/components/ui/button";
 import {
   Card,
   CardContent,

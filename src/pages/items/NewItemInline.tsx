@@ -72,6 +72,7 @@ export function NewItemInline(props: NewItemInlineProps) {
 
     return (
         <>
+            {/* Background Overlay */}
             <Portal mount={document.body}>
                 <div
                     class={cn(
@@ -81,6 +82,7 @@ export function NewItemInline(props: NewItemInlineProps) {
                     onClick={() => setIsOpen(false)}
                 />
             </Portal>
+
             <Collapsible open={isOpen()} onOpenChange={setIsOpen} class="bg-background">
                 {/* Header / Primary Helper Bar */}
                 <div class="p-4 flex items-center gap-2">
@@ -128,7 +130,7 @@ export function NewItemInline(props: NewItemInlineProps) {
                         onUnitChange={setUnitId}
 
                         modifyBy={modifyBy()}
-                        onModifyByChange={setModifyBy}
+                        // onModifyByChange={setModifyBy} // api does not support it
 
                         note={note()}
                         onNoteChange={setNote}

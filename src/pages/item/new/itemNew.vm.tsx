@@ -31,7 +31,12 @@ export function ItemNewPageVM() {
     console.log("🚀 ~ handleSubmit ~ keys:", keys);
     const nextId = keys.length ? Math.max(...keys) + 1 : 1;
     console.log("🚀 ~ handleSubmit ~ nextId:", nextId);
-    const tx = collection().insert({ ...values, id: nextId });
+    const tx = collection().insert({
+      ...values,
+      id: nextId,
+      modify_by: 1,
+      last_edited: new Date().toISOString(),
+    });
     await tx.isPersisted.promise;
 
     // const id = resp as unknown as number;
