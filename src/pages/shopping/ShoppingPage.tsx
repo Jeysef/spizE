@@ -1,5 +1,5 @@
 import { For, Show } from "solid-js";
-import type { ItemResponse } from "~/client";
+import type { ItemResponse, UnitResponse } from "~/client";
 import {
   Card,
   CardContent,
@@ -13,6 +13,7 @@ interface ShoppingPageProps {
   lowStockItems: ItemResponse[];
   handleRefill: (itemId: number, quantity: number) => void;
   loading: boolean;
+  allUnits: UnitResponse[];
 }
 
 // The main component for the Shopping List page
@@ -22,28 +23,28 @@ export default function ShoppingPage(props: ShoppingPageProps) {
       <Card>
         <CardHeader>
           <CardTitle class="text-3xl font-bold tracking-tight">
-            Shopping List
+            Nákupní seznam
           </CardTitle>
-          <CardDescription>
-            Here are the items you need to buy to restock your pantry.
+          <CardDescription class="text-muted-foreground">
+            Položky, které je třeba koupit.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Show when={!props.loading} fallback={<p>Loading...</p>}>
+          <Show when={!props.loading} fallback={<p>Načítání...</p>}>
             <div class="grid gap-3">
               <For
                 each={props.lowStockItems}
                 fallback={
                   <div class="rounded-lg border-2 border-dashed border-border p-8 text-center">
-                    <h3 class="text-lg font-semibold">All Stocked Up!</h3>
+                    <h3 class="text-lg font-semibold">Všechno je na skladněno!</h3>
                     <p class="text-muted-foreground">
-                      Your pantry is full. There's nothing to buy.
+                      Vaše spíže je zplněna. Není co koupit.
                     </p>
                   </div>
                 }
               >
                 {(item) => (
-                  <ShoppingItemCard item={item} onRefill={props.handleRefill} />
+                  <ShoppingItemCard item={item} onRefill={props.handleRefill} allUnits={props.allUnits} />
                 )}
               </For>
             </div>

@@ -2,7 +2,7 @@ import { createWritableMemo } from "@solid-primitives/memo";
 import { A } from "@solidjs/router";
 import { Check, CheckIcon, ChevronRight, PenIcon, XIcon } from "lucide-solid";
 import { createSignal, Show } from "solid-js";
-import type { ItemResponse } from "~/client";
+import type { ItemResponse, UnitResponse } from "~/client";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
@@ -10,6 +10,7 @@ import { Input } from "~/components/ui/input";
 interface ShoppingItemCardProps {
   item: ItemResponse;
   onRefill: (itemId: number, quantity: number) => void;
+  allUnits: UnitResponse[];
 }
 
 export function ShoppingItemCard(props: ShoppingItemCardProps) {
@@ -44,7 +45,7 @@ export function ShoppingItemCard(props: ShoppingItemCardProps) {
       </CardHeader>
       <CardContent class="flex justify-between gap-2">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-muted-foreground">Buying:&nbsp;</span>
+          <span class="text-muted-foreground">Kupuju:&nbsp;</span>
           <div class="flex items-center gap-2 flex-wrap">
             <Show
               when={isQuantityEditing()}
@@ -52,7 +53,7 @@ export function ShoppingItemCard(props: ShoppingItemCardProps) {
                 <>
                   <div class="flex items-center gap-2">
                     <span class="font-medium text-foreground">
-                      {editedQuantityToBuy()}
+                      {editedQuantityToBuy()} {props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}
                     </span>
                     <PenIcon
                       class="size-4 text-muted-foreground"
@@ -62,10 +63,10 @@ export function ShoppingItemCard(props: ShoppingItemCardProps) {
                   <Show when={isChanged()}>
                     <div class="flex items-center">
                       <span class="font-medium text-foreground">
-                        out of missing &nbsp;
+                        z chybějících &nbsp;
                       </span>
                       <span class="font-medium text-foreground">
-                        {defaultQuantityToBuy()}
+                        {defaultQuantityToBuy()} {props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}
                       </span>
                     </div>
                   </Show>
@@ -104,13 +105,14 @@ export function ShoppingItemCard(props: ShoppingItemCardProps) {
                   }}
                   class="invalid:border-red-500 invalid:text-red-600"
                 />
+                {props.allUnits?.find((unit) => unit.id === props.item.unit_id)?.name}
               </div>
             </Show>
           </div>
         </div>
         <Button variant="outline" size="icon" onClick={() => updateQuantity()}>
           <Check class="h-4 w-4" />
-          <span class="sr-only">Mark as done</span>
+          <span class="sr-only">Označit jako dokončeno</span>
         </Button>
       </CardContent>
     </Card>

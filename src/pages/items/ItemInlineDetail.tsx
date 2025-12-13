@@ -113,8 +113,9 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                     </div>
                     <div class="flex gap-1">
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="icon"
+                            class="min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
                             onClick={() => {
                                 const step = props.modifyBy || 1;
                                 const newVal = Math.max(0, props.currentQuantity - step);
@@ -125,8 +126,9 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                             <Minus class="size-4" />
                         </Button>
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="icon"
+                            class="min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
                             onClick={() => {
                                 const step = props.modifyBy || 1;
                                 const newVal = props.currentQuantity + step;
@@ -156,8 +158,9 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                     </div>
                     <div class="flex gap-1">
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="icon"
+                            class="min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
                             onClick={() => {
                                 const step = props.modifyBy || 1;
                                 const newVal = Math.max(1, props.fullQuantity - step);
@@ -168,8 +171,9 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                             <Minus class="size-4" />
                         </Button>
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="icon"
+                            class="min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
                             onClick={() => {
                                 const step = props.modifyBy || 1;
                                 const newVal = props.fullQuantity + step;
