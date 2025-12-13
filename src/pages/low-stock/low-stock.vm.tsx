@@ -29,7 +29,7 @@ export default function HomeViewModel() {
       title: "Chybějící",
       description: `${missingItems().length} chybí`,
       items: missingItems(),
-      emptyMsg: "Žádné položky chybí",
+      emptyMsg: "Žádné položky nechybí",
       color: "text-destructive",
     },
     {

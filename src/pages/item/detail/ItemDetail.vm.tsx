@@ -7,6 +7,7 @@ import type { ItemCreate } from "~/client";
 import { eq, useLiveQuery } from "@tanstack/solid-db";
 import {
   categoriesCollection,
+  unitsCollection,
   createItemsCollectionOptions,
 } from "~/db/collections";
 import { merge } from "~/lib/utils";
@@ -32,6 +33,10 @@ export function ItemDetailPageVM() {
     q.from({ categories: categoriesCollection })
   );
 
+  const unitsQuery = useLiveQuery((q) =>
+    q.from({ units: unitsCollection })
+  );
+
   // createComputed(() => {
   //   if (itemsQuery.isError()) {
   //     throw new Error("Could not load item");
@@ -55,13 +60,18 @@ export function ItemDetailPageVM() {
       {(data) => (
         <Show when={categoriesQuery.data} keyed>
           {(categoriesData) => (
-            <ItemDetailPage
-              item={data}
-              handleDelete={handleDelete}
-              onError={() => {}}
-              onSubmit={handleSubmit}
-              categories={categoriesData}
-            />
+            <Show when={unitsQuery.data} keyed>
+              {(unitsData) => (
+                <ItemDetailPage
+                  item={data}
+                  handleDelete={handleDelete}
+                  onError={() => { }}
+                  onSubmit={handleSubmit}
+                  categories={categoriesData}
+                  units={unitsData}
+                />
+              )}
+            </Show>
           )}
         </Show>
       )}

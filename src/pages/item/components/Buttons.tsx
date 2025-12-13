@@ -12,7 +12,7 @@ export function Buttons(props: ButtonsProps) {
   return (
     <>
       <Button type="button" variant="destructive" onClick={props.handleDelete}>
-        Delete
+        Smazat
       </Button>
       <form.Subscribe
         selector={(state) => ({
@@ -27,7 +27,7 @@ export function Buttons(props: ButtonsProps) {
               disabled={!state().canSubmit}
               class="relative"
             >
-              Submit
+              Uložit
               <Show when={state().isSubmitting}>
                 <div class="absolute inset-0 grid place-items-center bg-background/60">
                   <LoaderCircle class="h-4 w-4 animate-spin text-foreground" />

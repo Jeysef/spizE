@@ -1,7 +1,7 @@
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import ChevronLeft from "lucide-solid/icons/chevron-left";
 import { z } from "zod";
-import type { CategoryResponse, ItemCreate, ItemResponse } from "~/client";
+import type { CategoryResponse, ItemCreate, ItemResponse, UnitResponse } from "~/client";
 import { zItemCreate } from "~/client/zod.gen";
 import {
   Card,
@@ -11,7 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { ProgressBar } from "~/pages/item/components/ProgressBar";
+import { Button } from "~/components/ui/button";
+import { ItemInlineDetail } from "~/pages/items/ItemInlineDetail";
 import { useAppForm } from "~/pages/item/detail/itemForm";
 
 interface ItemDetailPageProps {
@@ -20,29 +21,19 @@ interface ItemDetailPageProps {
   onError?: (error: Error) => void;
   handleDelete: () => void;
   categories: CategoryResponse[];
+  units: UnitResponse[];
 }
 
 // ItemDetail component with integrated TanStack Form
+// Define a schema that includes modify_by since it's missing in zItemCreate
+const zAppItemCreate = zItemCreate.extend({
+  modify_by: z.number().optional(),
+});
+
+type AppItemCreate = z.infer<typeof zAppItemCreate>;
+
 export default function ItemDetailPage(props: ItemDetailPageProps) {
-  console.log("🚀 ~ ItemDetailPage ~ props.item:", props.item);
-  console.log("🚀 ~ ItemDetailPage ~ props.categories:", props.categories);
-  // const form = createForm(() => ({
-  //   defaultValues: {
-  //     name: props.item.name,
-  //     current_quantity: props.item.current_quantity,
-  //     full_quantity: props.item.full_quantity,
-  //     category_id: props.item.category_id,
-  //     note: props.item.note,
-  //   } satisfies ItemCreate,
-  //   onSubmit: async ({ value }) => {
-  //     await props.onSubmit?.(value);
-  //   },
-
-  //   validators: {
-  //     onSubmit: zItemCreate,
-  //   },
-  // }));
-
+  // const navigate = useNavigate();
   const form = useAppForm(() => ({
     defaultValues: {
       name: props.item.name,
@@ -50,24 +41,38 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
       full_quantity: props.item.full_quantity,
       category_id: props.item.category_id,
       note: props.item.note,
-    } satisfies ItemCreate,
+      unit_id: props.item.unit_id,
+      modify_by: props.item.modify_by ?? 1,
+    } as AppItemCreate,
     onSubmit: async ({ value }) => {
-      await props.onSubmit(value);
+      // We need to cast value to match what onSubmit expects if it's strictly typed, 
+      // but strictly speaking value here includes modify_by which is good for the patch.
+      // The prop onSubmit expects ItemCreate. We might need to cast or just pass it 
+      // if TypeScript allows structural typing (it might complain about extra property).
+      await props.onSubmit(value as unknown as ItemCreate);
+      // navigate back
+      window.history.back();
     },
 
     validators: {
-      onSubmit: zItemCreate,
+      onSubmit: zAppItemCreate,
     },
   }));
 
   return (
     <main class="container mx-auto max-w-2xl px-4 py-8">
-      <A
+      {/* <A
         href="/"
         class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center"
       >
-        <ChevronLeft class="size-5" /> Back to Dashboard
-      </A>
+        <ChevronLeft class="size-5" /> Zpět na seznam
+      </A> */}
+      <button
+        class="mb-4 inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground items-center cursor-pointer"
+        onClick={() => window.history.back()}
+      >
+        <ChevronLeft class="size-5" /> Zpět na seznam
+      </button>
 
       <form
         onSubmit={(e) => {
@@ -82,70 +87,65 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
               {props.item.name}
             </CardTitle>
             <CardDescription>
-              View and edit the details of this pantry item.
+              Detail a úprava položky.
             </CardDescription>
           </CardHeader>
-          <CardContent class="grid gap-6">
-            {/* Field for Item Name */}
-            <form.AppField
-              name="name"
-              validators={{
-                onChange: z
-                  .string()
-                  .min(2, "Item name must be at least 2 characters long."),
-              }}
-              children={(field) => <field.ItemName />}
-            />
+          <CardContent>
+            <form.Subscribe
+              selector={(state) => state.values}
+              children={(values) => (
+                <ItemInlineDetail
+                  // Fields
+                  name={values().name}
+                  onNameChange={(v) => form.setFieldValue("name", v)}
+                  onNameInput={(v) => form.setFieldValue("name", v)}
 
-            {/* Fields for Quantity */}
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Current Quantity Field */}
-              <form.AppField
-                name="current_quantity"
-                validators={{
-                  onChange: z.number().min(0, "Quantity cannot be negative."),
-                }}
-                children={(field) => (
-                  <field.ItemCount name="Current quantity" />
-                )}
-              />
+                  categoryId={values().category_id}
+                  onCategoryChange={(v) => form.setFieldValue("category_id", v)}
 
-              {/* Target Quantity Field */}
-              <form.AppField
-                name="full_quantity"
-                validators={{
-                  onChange: z
-                    .number()
-                    .min(1, "Target quantity must be greater than 0."),
-                }}
-                children={(field) => <field.ItemCount name="Full quantity" />}
-              />
-            </div>
+                  currentQuantity={values().current_quantity}
+                  onCurrentQuantityChange={(v) => form.setFieldValue("current_quantity", v)}
+                  onCurrentQuantityInput={(v) => form.setFieldValue("current_quantity", v)}
 
-            {/* Category Field */}
-            <form.AppField
-              name="category_id"
-              validators={{
-                onChange: z.number().min(1, "Select a category."),
-              }}
-              children={(field) => (
-                <field.CategorySelect categories={props.categories} />
+                  fullQuantity={values().full_quantity}
+                  onFullQuantityChange={(v) => form.setFieldValue("full_quantity", v)}
+                  onFullQuantityInput={(v) => form.setFieldValue("full_quantity", v)}
+
+                  unitId={values().unit_id}
+                  onUnitChange={(v) => form.setFieldValue("unit_id", v)}
+
+                  modifyBy={values().modify_by}
+                  onModifyByChange={(v) => form.setFieldValue("modify_by", v)}
+
+                  note={values().note}
+                  onNoteChange={(v) => form.setFieldValue("note", v)}
+
+                  // Configuration
+                  categories={props.categories}
+                  units={props.units}
+                  showProgress={true}
+                  // onDelete={props.handleDelete}
+                  class=" space-y-2"
+                />
               )}
             />
 
-            <form.AppField
-              name="note"
-              validators={{
-                onChange: z.string(),
-              }}
-              children={(field) => <field.ItemNote />}
-            />
-
-            {/* Stock Level Indicator */}
-            <ProgressBar
-              current_quantity={props.item.current_quantity}
-              full_quantity={props.item.full_quantity}
-            />
+            {/* <div class="mt-6 flex justify-end gap-2">
+              <form.Subscribe
+                selector={(state) => ({
+                  canSubmit: state.canSubmit,
+                  isSubmitting: state.isSubmitting,
+                })}
+                children={(state) => (
+                  <Button
+                    type="submit"
+                    disabled={!state().canSubmit}
+                  >
+                    {state().isSubmitting ? "Ukládání..." : "Uložit"}
+                  </Button>
+                )}
+              />
+          </div> */}
           </CardContent>
           <CardFooter class="flex justify-end gap-2">
             <form.AppForm>
@@ -154,6 +154,6 @@ export default function ItemDetailPage(props: ItemDetailPageProps) {
           </CardFooter>
         </Card>
       </form>
-    </main>
+    </main >
   );
 }
