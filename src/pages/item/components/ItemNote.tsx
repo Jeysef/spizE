@@ -9,7 +9,7 @@ export function ItemNote() {
   const id = createUniqueId();
   return (
     <div class="grid gap-2">
-      <Label for={id}>Item Note (optional)</Label>
+      <Label for={id}>Poznámka (volitelné)</Label>
       <Input
         id={id}
         name={field().name}

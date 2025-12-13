@@ -27,10 +27,10 @@ export function CategorySelect(props: CategorySelectProps) {
   };
   return (
     <div class="grid gap-2">
-      <Label for={field().name}>Category</Label>
+      <Label for={field().name}>Kategorie</Label>
       <Select
         value={value()}
-        placeholder="Select a category"
+        placeholder="Vyberte kategorii"
         onBlur={field().handleBlur}
         onChange={(value) => value && field().handleChange(value.value)}
         options={props.categories.map((category) => ({

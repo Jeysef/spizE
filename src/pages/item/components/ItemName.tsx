@@ -9,14 +9,14 @@ export function ItemName() {
   const id = createUniqueId();
   return (
     <div class="grid gap-2">
-      <Label for={id}>Item Name</Label>
+      <Label for={id}>Název položky</Label>
       <Input
         id={id}
         name={field().name}
         value={field().state.value}
         onBlur={field().handleBlur}
         onInput={(e) => field().handleChange(e.currentTarget.value)}
-        placeholder="e.g., Whole Wheat Bread"
+        placeholder="např. Celozrnný chléb"
       />
       <ErrorMessage />
     </div>
