@@ -1,6 +1,6 @@
 import type { Accessor } from "solid-js";
 import { isServer } from "solid-js/web";
-import { sseEndpointSseGet } from "~/client";
+import { sseEndpointSseGet, getUserItemUserUserIdItemItemIdGet } from "~/client";
 import type { ItemsCollectionType } from "~/db/collections";
 
 export async function itemsSync(
@@ -30,11 +30,24 @@ class EventResponse(Base):
     if (event.user_id !== userId) continue;
     const itemId = event.item_id;
     switch (event.event) {
-      case "item_created":
-      case "item_updated":
-        collection().utils.refetch();
+      case "item_created": {
+        console.log("SSE item_created", itemId);
+        const { data } = await getUserItemUserUserIdItemItemIdGet({
+          path: { user_id: userId, item_id: itemId },
+        });
+        if (data) collection().utils.writeInsert(data);
         break;
+      }
+      case "item_updated": {
+        console.log("SSE item_updated", itemId);
+        const { data } = await getUserItemUserUserIdItemItemIdGet({
+          path: { user_id: userId, item_id: itemId },
+        });
+        if (data) collection().utils.writeUpdate(data);
+        break;
+      }
       case "item_deleted":
+        console.log("SSE item_deleted", itemId);
         collection().utils.writeDelete(itemId);
         break;
       case "health_check":

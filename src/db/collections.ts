@@ -39,7 +39,7 @@ export const usersCollection = createCollection(
     queryKey: getUsersUserAllGetQueryKey(),
     queryClient,
     getKey: (item: UserResponse) => item.id,
-    refetchInterval: 20000, // 20 second
+    // refetchInterval: 20000, // 20 second
     // schema: zGetUsersUserAllGetResponse,
   })
 );
@@ -96,6 +96,7 @@ export const createItemsCollectionOptions = (
             })
           )
         );
+        return { refetch: false };
       },
       onDelete: async ({ transaction }) => {
         await Promise.all(
@@ -108,6 +109,7 @@ export const createItemsCollectionOptions = (
             })
           )
         );
+        return { refetch: false };
       },
       onInsert: async ({ transaction }) => {
         await Promise.all(
@@ -121,6 +123,7 @@ export const createItemsCollectionOptions = (
             })
           )
         );
+        return { refetch: false };
       },
       // onInsert: async ({ transaction }) => {
       //   await Promise.all(
