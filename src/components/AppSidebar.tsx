@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 import HouseIcon from "lucide-solid/icons/house";
-import ListIcon from "lucide-solid/icons/list";
+import PackageOpenIcon from "lucide-solid/icons/package-open";
 import PlusIcon from "lucide-solid/icons/plus";
 import ShoppingBasketIcon from "lucide-solid/icons/shopping-basket";
 import { For } from "solid-js";
@@ -20,24 +20,24 @@ import type { RoutePath } from "~/routes";
 const data = {
   navMain: [
     {
-      title: "Home",
+      title: "Spíž",
       url: "/",
       icon: HouseIcon,
     },
     {
-      title: "Items",
-      url: "/items",
-      icon: ListIcon,
+      title: "Nízké množství",
+      url: "/low-stock",
+      icon: PackageOpenIcon,
     },
     {
-      title: "Shopping",
+      title: "Nákupní seznam",
       url: "/shopping",
       icon: ShoppingBasketIcon,
     },
   ],
   navActions: [
     {
-      title: "Add Item",
+      title: "Přidat položku",
       url: "/items/add",
       icon: PlusIcon,
     },
