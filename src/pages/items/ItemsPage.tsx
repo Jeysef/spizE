@@ -16,6 +16,8 @@ import {
 } from "~/components/ui/select";
 import { ItemCard } from "~/pages/items/ItemCard";
 
+const ALL_CATEGORY = { id: -1, name: "Všechny" };
+
 interface ItemsPageProps {
   items: ItemResponse[];
   categories: CategoryResponse[] | undefined;
@@ -61,13 +63,38 @@ export function ItemsPage(props: ItemsPageProps) {
           Kategorie:
           <Select<CategoryResponse>
             multiple
-            options={props.categories || []}
+            options={[ALL_CATEGORY, ...(props.categories || [])]}
             optionValue="id"
             optionTextValue="name"
-            value={props.categories?.filter((c) => props.categoryFilter.includes(c.id))}
-            onChange={(v) =>
-              props.setCategoryFilter(v ? v.map((c) => c.id) : [])
+            value={
+              props.categoryFilter.length === 0
+                ? [ALL_CATEGORY]
+                : props.categories?.filter((c) =>
+                  props.categoryFilter.includes(c.id)
+                )
             }
+            onChange={(v) => {
+              if (!v) {
+                props.setCategoryFilter([]);
+                return;
+              }
+              const hasAll = v.some((c) => c.id === -1);
+              const hadAll = props.categoryFilter.length === 0;
+
+              if (hasAll) {
+                if (hadAll) {
+                  // Was All, now All + something else -> Remove All
+                  const others = v.filter((c) => c.id !== -1).map((c) => c.id);
+                  props.setCategoryFilter(others);
+                } else {
+                  // Was Not All, now All added -> Set to All
+                  props.setCategoryFilter([]);
+                }
+              } else {
+                const newIds = v.map((c) => c.id);
+                props.setCategoryFilter(newIds);
+              }
+            }}
             placeholder="Všechny"
             itemComponent={(props) => (
               <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
