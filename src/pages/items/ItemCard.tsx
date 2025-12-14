@@ -112,7 +112,7 @@ export function ItemCard(props: ItemCardProps) {
             <Button
               variant="secondary"
               size="sm"
-              class="h-9 min-w-9 px-3 rounded-full text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-medium border-0"
+              class="h-9 min-w-9 px-3 rounded-full text-secondary-foreground [@media(hover:hover)]:hover:bg-primary [@media(hover:hover)]:hover:text-primary-foreground transition-colors font-medium border-0"
               disabled={props.item.current_quantity <= 0}
               onClick={(e) => {
                 e.stopPropagation();
