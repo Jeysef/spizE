@@ -41,7 +41,7 @@ function UserDropdown() {
           fallback={<DropdownMenuLabel>No users found.</DropdownMenuLabel>}
         >
           {(user) => (
-            <DropdownMenuItem onClick={() => setCurrentUser(user)}>
+            <DropdownMenuItem onSelect={() => setCurrentUser(user)}>
               {user.name}
             </DropdownMenuItem>
           )}

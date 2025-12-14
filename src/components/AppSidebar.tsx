@@ -63,7 +63,7 @@ export function AppSidebar() {
               // as={A}
               as={A}
               href="/"
-              class="data-[slot=sidebar-menu-button]:!p-1.5"
+              class="data-[slot=sidebar-menu-button]:p-1.5!"
               onClick={() => isMobile() && setOpenMobile(false)}
             >
               {/* <IconInnerShadowTop className="!size-5" /> */}
