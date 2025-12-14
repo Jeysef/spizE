@@ -45,7 +45,7 @@ export function ShoppingItemCard(props: ShoppingItemCardProps) {
       </CardHeader>
       <CardContent class="flex justify-between gap-2">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-muted-foreground">Kupuju:&nbsp;</span>
+          <span class="text-muted-foreground">Kupuji:&nbsp;</span>
           <div class="flex items-center gap-2 flex-wrap">
             <Show
               when={isQuantityEditing()}
