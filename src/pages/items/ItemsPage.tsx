@@ -53,7 +53,7 @@ export function ItemsPage(props: ItemsPageProps) {
         <div class="grow">
           <Input
             disabled={props.isLoading}
-            placeholder="Filtrovat podle jména..."
+            placeholder="Vyhledat podle jména..."
             value={props.nameFilter}
             onInput={(e) => props.setNameFilter(e.currentTarget.value)}
           />
