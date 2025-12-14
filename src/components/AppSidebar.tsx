@@ -1,5 +1,6 @@
 import { A } from "@solidjs/router";
 import HouseIcon from "lucide-solid/icons/house";
+import InfoIcon from "lucide-solid/icons/info";
 import PackageOpenIcon from "lucide-solid/icons/package-open";
 import PlusIcon from "lucide-solid/icons/plus";
 import ShoppingBasketIcon from "lucide-solid/icons/shopping-basket";
@@ -14,6 +15,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "~/components/ui/sidebar";
 import type { RoutePath } from "~/routes";
 
@@ -34,6 +36,11 @@ const data = {
       url: "/shopping",
       icon: ShoppingBasketIcon,
     },
+    {
+      title: "O aplikaci",
+      url: "/about",
+      icon: InfoIcon,
+    },
   ],
   navActions: [
     {
@@ -45,6 +52,8 @@ const data = {
 } satisfies Record<string, { title: string; url: RoutePath; icon: any }[]>;
 
 export function AppSidebar() {
+  const { isMobile, setOpenMobile } = useSidebar();
+
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
@@ -55,6 +64,7 @@ export function AppSidebar() {
               as={A}
               href="/"
               class="data-[slot=sidebar-menu-button]:!p-1.5"
+              onClick={() => isMobile() && setOpenMobile(false)}
             >
               {/* <IconInnerShadowTop className="!size-5" /> */}
               <span class="text-base font-semibold">Spíž-E</span>
@@ -70,7 +80,11 @@ export function AppSidebar() {
               <For each={data.navMain}>
                 {(item) => (
                   <SidebarMenuItem>
-                    <SidebarMenuButton as={A} href={item.url}>
+                    <SidebarMenuButton
+                      as={A}
+                      href={item.url}
+                      onClick={() => isMobile() && setOpenMobile(false)}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </SidebarMenuButton>

@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "~/components/ui/sidebar";
 
 export function NavActions({
@@ -19,13 +20,19 @@ export function NavActions({
     icon: LucideIcon;
   }[];
 } & ComponentProps<typeof SidebarGroup>) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem>
-              <SidebarMenuButton as={A} href={item.url}>
+              <SidebarMenuButton
+                as={A}
+                href={item.url}
+                onClick={() => isMobile() && setOpenMobile(false)}
+              >
                 <item.icon />
                 <span>{item.title}</span>
               </SidebarMenuButton>
