@@ -63,6 +63,7 @@ export function ItemsPage(props: ItemsPageProps) {
       <div class="mb-6 flex flex-col gap-4 sm:flex-row">
         <div class="grow">
           <Input
+            class="bg-card"
             disabled={props.isLoading}
             placeholder="Vyhledat podle jména..."
             value={props.nameFilter}
@@ -79,6 +80,7 @@ export function ItemsPage(props: ItemsPageProps) {
             value={
               props.categories?.find((c) => c.id === props.categoryFilter) || ALL_CATEGORY
             }
+            class="bg-card"
             onChange={(v) => props.setCategoryFilter(v ? v.id : ALL_CATEGORY.id)}
             placeholder="Všechny"
             itemComponent={(props) => (
@@ -96,6 +98,7 @@ export function ItemsPage(props: ItemsPageProps) {
         <div class="flex items-center gap-2 justify-end">
           Řadit podle:
           <Select
+            class="bg-card"
             disabled={props.isLoading}
             value={props.sortBy}
             onChange={(value) => value && props.setSortBy(value)}
