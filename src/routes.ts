@@ -4,6 +4,8 @@ import ItemData from "~/pages/item.data";
 import AboutData from "./pages/about.data";
 // import Home from "./pages/home/home.vm";
 import ItemsPage from "./pages/items";
+import LowStockPage from "./pages/low-stock/low-stock.vm";
+import ShoppingPage from "./pages/shopping";
 
 export const routeNames = {
   "/": "Dashboard",
@@ -37,7 +39,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/low-stock",
-    component: lazy(() => import("./pages/low-stock/low-stock.vm")),
+    component: LowStockPage,
   },
   {
     path: "/item/:id",
@@ -46,7 +48,7 @@ export const routes: RouteDefinition<RoutePath | "**">[] = [
   },
   {
     path: "/shopping",
-    component: lazy(() => import("./pages/shopping")),
+    component: ShoppingPage,
   },
   {
     path: "**",
