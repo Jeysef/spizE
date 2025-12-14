@@ -1,6 +1,6 @@
 import { lt, useLiveQuery } from "@tanstack/solid-db";
 import { createSignal } from "solid-js";
-import { unitsCollection } from "~/db/collections";
+import { categoriesCollection, unitsCollection } from "~/db/collections";
 import ShoppingPage from "~/pages/shopping/ShoppingPage";
 import { useItems } from "~/providers/items/items.hooks";
 
@@ -27,12 +27,16 @@ export function ShoppingVM() {
   const unitsQuery = useLiveQuery((q) => q.from({ units: unitsCollection }));
   const units = () => unitsQuery.data;
 
+  const categoriesQuery = useLiveQuery((q) => q.from({ categories: categoriesCollection }));
+  const categories = () => categoriesQuery.data;
+
   return (
     <ShoppingPage
       lowStockItems={data()}
       handleRefill={handleRefill}
       loading={itemsQuery.isLoading()}
       allUnits={units()}
+      allCategories={categories()}
     />
   );
 }

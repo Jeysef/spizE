@@ -63,7 +63,7 @@ export function ItemsPage(props: ItemsPageProps) {
       <div class="mb-6 flex flex-col gap-4 sm:flex-row">
         <div class="grow">
           <Input
-            class="bg-card"
+            class="bg-card overflow-hidden"
             disabled={props.isLoading}
             placeholder="Vyhledat podle jména..."
             value={props.nameFilter}
@@ -80,14 +80,13 @@ export function ItemsPage(props: ItemsPageProps) {
             value={
               props.categories?.find((c) => c.id === props.categoryFilter) || ALL_CATEGORY
             }
-            class="bg-card"
             onChange={(v) => props.setCategoryFilter(v ? v.id : ALL_CATEGORY.id)}
             placeholder="Všechny"
             itemComponent={(props) => (
               <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
             )}
           >
-            <SelectTrigger class="w-[180px]">
+            <SelectTrigger class="w-[180px] bg-card">
               <SelectValue<CategoryResponse>>
                 {(state) => state.selectedOption()?.name || "Všechny"}
               </SelectValue>
@@ -98,7 +97,6 @@ export function ItemsPage(props: ItemsPageProps) {
         <div class="flex items-center gap-2 justify-end">
           Řadit podle:
           <Select
-            class="bg-card"
             disabled={props.isLoading}
             value={props.sortBy}
             onChange={(value) => value && props.setSortBy(value)}
@@ -110,7 +108,7 @@ export function ItemsPage(props: ItemsPageProps) {
               <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
             )}
           >
-            <SelectTrigger class=" flex sm:w-[180px]">
+            <SelectTrigger class="bg-card flex sm:w-[180px]">
               <SelectValue<{ value: string; label: string }>>
                 {(state) => state.selectedOption().label}
               </SelectValue>
