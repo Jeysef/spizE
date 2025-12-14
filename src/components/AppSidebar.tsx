@@ -3,7 +3,7 @@ import HouseIcon from "lucide-solid/icons/house";
 import InfoIcon from "lucide-solid/icons/info";
 import PackageOpenIcon from "lucide-solid/icons/package-open";
 import PlusIcon from "lucide-solid/icons/plus";
-import ShoppingBasketIcon from "lucide-solid/icons/shopping-basket";
+import ShoppingCartIcon from "lucide-solid/icons/shopping-cart";
 import { For } from "solid-js";
 import { NavActions } from "~/components/NavBottom";
 import {
@@ -34,7 +34,7 @@ const data = {
     {
       title: "Nákupní seznam",
       url: "/shopping",
-      icon: ShoppingBasketIcon,
+      icon: ShoppingCartIcon,
     },
     {
       title: "O aplikaci",

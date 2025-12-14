@@ -1,5 +1,5 @@
 import { A, useLocation } from "@solidjs/router";
-import { HouseIcon, PackageOpenIcon, ShoppingBasketIcon } from "lucide-solid";
+import { HouseIcon, PackageOpenIcon, ShoppingCartIcon } from "lucide-solid";
 import { For } from "solid-js";
 import { cn } from "~/lib/utils";
 
@@ -7,7 +7,7 @@ const links = [
   { href: "/", label: "Spíž", icon: HouseIcon },
   { href: "/low-stock", label: "Nízké množství", icon: PackageOpenIcon },
   // { href: "/items", label: "Items", icon: ListIcon },
-  { href: "/shopping", label: "Nákupní seznam", icon: ShoppingBasketIcon },
+  { href: "/shopping", label: "Nákupní seznam", icon: ShoppingCartIcon },
 ];
 
 export const BottomNavigation = () => {
