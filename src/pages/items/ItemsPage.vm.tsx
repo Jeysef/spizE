@@ -233,6 +233,7 @@ export function ItemsPageVM() {
           units={unitsQuery.data}
           users={usersQuery.data}
           onCreate={handleCreateItem}
+          selectedCategoryId={categoryFilter()}
         />
       </Portal>
     </>

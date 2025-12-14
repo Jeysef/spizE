@@ -18,18 +18,30 @@ import {
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 import { ItemInlineDetail } from "./ItemInlineDetail";
+import { ALL_CATEGORY } from "./category";
 
 interface NewItemInlineProps {
     categories: CategoryResponse[] | undefined;
     units: UnitResponse[] | undefined;
     users: UserResponse[] | undefined;
+
     onCreate: (item: Partial<ItemResponse>) => Promise<void>;
+    selectedCategoryId?: number;
 }
 
 export function NewItemInline(props: NewItemInlineProps) {
     const [isOpen, setIsOpen] = createSignal(false);
     const [name, setName] = createSignal("");
     const [categoryId, setCategoryId] = createSignal<number | undefined>();
+
+    createEffect(() => {
+        if (props.selectedCategoryId !== undefined && props.selectedCategoryId !== ALL_CATEGORY.id) {
+            setCategoryId(props.selectedCategoryId);
+        } else {
+            setCategoryId(undefined);
+        }
+    });
+
     const [currentQuantity, setCurrentQuantity] = createSignal(0);
     const [fullQuantity, setFullQuantity] = createSignal(1);
     const [note, setNote] = createSignal("");
@@ -51,7 +63,12 @@ export function NewItemInline(props: NewItemInlineProps) {
 
         // Reset form
         setName("");
-        setCategoryId(undefined);
+        // Reset category to the selected one (if any), otherwise undefined
+        if (props.selectedCategoryId !== undefined && props.selectedCategoryId !== ALL_CATEGORY.id) {
+            setCategoryId(props.selectedCategoryId);
+        } else {
+            setCategoryId(undefined);
+        }
         setCurrentQuantity(0);
         setFullQuantity(1);
         setNote("");
@@ -95,9 +112,26 @@ export function NewItemInline(props: NewItemInlineProps) {
                             if (e.key === "Enter") handleCreate();
                         }}
                     />
-                    <Button onClick={handleCreate} disabled={!name()}>
+                    <Button onClick={handleCreate} disabled={!name()} class="h-auto py-2">
                         <Plus class="size-4 mr-2" />
-                        Přidat
+                        <Show
+                            when={
+                                props.selectedCategoryId !== undefined &&
+                                props.selectedCategoryId !== ALL_CATEGORY.id &&
+                                categoryId() === props.selectedCategoryId &&
+                                props.categories?.find(
+                                    (c) => c.id === props.selectedCategoryId
+                                )
+                            }
+                            fallback={"Přidat"}
+                        >
+                            {(cat) => (
+                                <div class="flex flex-col items-start text-xs">
+                                    <span>Přidat do</span>
+                                    <span class="font-bold">{cat().name}</span>
+                                </div>
+                            )}
+                        </Show>
                     </Button>
                     <CollapsibleTrigger
                         class={cn(buttonVariants({ variant: "outline", size: "icon" }))}
