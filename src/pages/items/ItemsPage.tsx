@@ -1,5 +1,4 @@
-import { createSignal } from "solid-js";
-import { For, Show } from "solid-js";
+import { createSignal, onMount, onCleanup, For, Show } from "solid-js";
 import type {
   CategoryResponse,
   ItemResponse,
@@ -16,7 +15,7 @@ import {
 } from "~/components/ui/select";
 import { ItemCard } from "~/pages/items/ItemCard";
 
-const ALL_CATEGORY = { id: -1, name: "Všechny" };
+import { ALL_CATEGORY } from "~/pages/items/category";
 
 interface ItemsPageProps {
   items: ItemResponse[];
@@ -26,8 +25,8 @@ interface ItemsPageProps {
   isLoading: boolean;
   nameFilter: string;
   setNameFilter: (value: string) => void;
-  categoryFilter: number[];
-  setCategoryFilter: (value: number[]) => void;
+  categoryFilter: number;
+  setCategoryFilter: (value: number) => void;
   sortBy: { value: string; label: string };
   sortByOptions: { value: string; label: string }[];
   setSortBy: (value: { value: string; label: string }) => void;
@@ -38,6 +37,18 @@ interface ItemsPageProps {
 export function ItemsPage(props: ItemsPageProps) {
 
   const [opened, setOpened] = createSignal(-1);
+
+  onMount(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (!target?.closest || !target.closest(".item-card-root")) {
+        setOpened(-1);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    onCleanup(() => document.removeEventListener("click", handleClickOutside));
+  });
 
   return (
     <main class="container mx-auto px-4 py-8 pb-32">
@@ -62,39 +73,13 @@ export function ItemsPage(props: ItemsPageProps) {
         <div class="flex items-center gap-2 justify-end">
           Kategorie:
           <Select<CategoryResponse>
-            multiple
             options={[ALL_CATEGORY, ...(props.categories || [])]}
             optionValue="id"
             optionTextValue="name"
             value={
-              props.categoryFilter.length === 0
-                ? [ALL_CATEGORY]
-                : props.categories?.filter((c) =>
-                  props.categoryFilter.includes(c.id)
-                )
+              props.categories?.find((c) => c.id === props.categoryFilter) || ALL_CATEGORY
             }
-            onChange={(v) => {
-              if (!v) {
-                props.setCategoryFilter([]);
-                return;
-              }
-              const hasAll = v.some((c) => c.id === -1);
-              const hadAll = props.categoryFilter.length === 0;
-
-              if (hasAll) {
-                if (hadAll) {
-                  // Was All, now All + something else -> Remove All
-                  const others = v.filter((c) => c.id !== -1).map((c) => c.id);
-                  props.setCategoryFilter(others);
-                } else {
-                  // Was Not All, now All added -> Set to All
-                  props.setCategoryFilter([]);
-                }
-              } else {
-                const newIds = v.map((c) => c.id);
-                props.setCategoryFilter(newIds);
-              }
-            }}
+            onChange={(v) => props.setCategoryFilter(v ? v.id : ALL_CATEGORY.id)}
             placeholder="Všechny"
             itemComponent={(props) => (
               <SelectItem item={props.item}>{props.item.textValue}</SelectItem>
@@ -102,12 +87,7 @@ export function ItemsPage(props: ItemsPageProps) {
           >
             <SelectTrigger class="w-[180px]">
               <SelectValue<CategoryResponse>>
-                {(state) => {
-                  const options = state.selectedOptions();
-                  if (options.length === 0 || !options) return "Všechny";
-                  if (options.length === 1) return options[0].name;
-                  return `${options.length} vybráno`;
-                }}
+                {(state) => state.selectedOption()?.name || "Všechny"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent />

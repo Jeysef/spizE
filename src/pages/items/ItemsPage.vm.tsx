@@ -1,6 +1,7 @@
 import { toast } from "solid-sonner";
 import { useLiveQuery } from "@tanstack/solid-db";
 import { createEffect, createMemo, createSignal } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import type { ItemResponse } from "~/client";
 import {
   categoriesCollection,
@@ -12,6 +13,10 @@ import { ItemsPage } from "~/pages/items/ItemsPage";
 import { useItems } from "~/providers/items/items.hooks";
 import { NewItemInline } from "./NewItemInline";
 import { Portal } from "solid-js/web";
+
+
+
+import { ALL_CATEGORY } from "~/pages/items/category";
 
 export function ItemsPageVM() {
   // const sortByOptions = ["missing", "name", "stock", "last_edited"] as const;
@@ -29,10 +34,45 @@ export function ItemsPageVM() {
       value: "stock",
       label: "Množství"
     },];
-  const [nameFilter, setNameFilter] = createSignal("");
-  const [categoryFilter, setCategoryFilter] = createSignal<number[]>([]);
-  const [sortBy, setSortBy] =
-    createSignal<(typeof sortByOptions)[number]>(sortByOptions[0]);
+  /* URL State Sync */
+  type ItemsPageSearchParams = {
+    name?: string;
+    category?: string;
+    sort?: string;
+  };
+  const [searchParams, setSearchParams] = useSearchParams<ItemsPageSearchParams>();
+
+  const nameFilter = () => {
+    const name = searchParams.name;
+    if (Array.isArray(name)) return name[0] || "";
+    return name || "";
+  };
+  const setNameFilter = (value: string) => {
+    setSearchParams({ name: value }, { replace: true });
+  };
+
+  const categoryFilter = () => {
+    const cat = searchParams.category;
+    if (Array.isArray(cat)) return Number.parseInt(cat[0] || String(ALL_CATEGORY.id));
+    return cat ? Number.parseInt(cat) : ALL_CATEGORY.id;
+  };
+
+  const setCategoryFilter = (value: number) => {
+    setSearchParams({
+      category: value !== ALL_CATEGORY.id ? String(value) : undefined,
+    });
+  };
+
+  const sortBy = () => {
+    const sortVal = searchParams.sort;
+    const value = Array.isArray(sortVal) ? sortVal[0] : sortVal;
+    return sortByOptions.find((o) => o.value === value) || sortByOptions[0];
+  };
+
+  const setSortBy = (value: { value: string; label: string }) => {
+    setSearchParams({ sort: value.value });
+  };
+
   // Snapshot of timestamps to keep sort order stable during edits
   const [timestampSnapshot, setTimestampSnapshot] = createSignal<
     Record<number, string>
@@ -130,7 +170,7 @@ export function ItemsPageVM() {
     const currentCategoryFilter = categoryFilter();
     const filteredItems = items?.filter((item) => {
       const matchesName = item.name.toLowerCase().includes(nameFilter().toLowerCase());
-      const matchesCategory = currentCategoryFilter.length === 0 || currentCategoryFilter.includes(item.category_id);
+      const matchesCategory = currentCategoryFilter === ALL_CATEGORY.id || item.category_id === currentCategoryFilter;
       return matchesName && matchesCategory;
     });
 

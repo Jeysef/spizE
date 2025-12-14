@@ -58,7 +58,7 @@ export function ItemCard(props: ItemCardProps) {
   };
 
   return (
-    <Collapsible open={props.opened} onOpenChange={props.onOpenChange} class="overflow-hidden">
+    <Collapsible open={props.opened} onOpenChange={props.onOpenChange} class="item-card-root overflow-hidden">
       <Card class="flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-md hover:border-primary/20 bg-card border-transparent">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 p-4 pl-6">
 

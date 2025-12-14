@@ -1,0 +1,1 @@
+export const ALL_CATEGORY = { id: -1, name: "Všechny" };
