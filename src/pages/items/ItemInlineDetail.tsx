@@ -80,7 +80,7 @@ export const ItemInlineDetail: Component<ItemInlineDetailProps> = (props) => {
                     options={props.categories || []}
                     optionValue="id"
                     optionTextValue="name"
-                    placeholder="Select a category"
+                    placeholder="Vyberte kategorii"
                     itemComponent={(props) => (
                         <SelectItem item={props.item}>{props.item.rawValue.name}</SelectItem>
                     )}
